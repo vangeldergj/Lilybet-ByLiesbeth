@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Afrekenen — Lilybet by Liesbeth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="brand.css" />
+
+  <style>
+    /* ─── Slim header for checkout ─── */
+    .co-hdr {
+      background: var(--cream);
+      padding: 22px 56px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+    .co-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 500;
+      color: var(--mid);
+      transition: color .2s;
+    }
+    .co-back:hover { color: var(--accent); }
+    .co-logo {
+      text-align: center; line-height: 1;
+    }
+    .co-logo .name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px; color: var(--dark);
+      letter-spacing: -.3px;
+    }
+    .co-logo .tag {
+      font-family: 'Caveat', cursive;
+      font-size: 14px; color: var(--accent);
+      display: block;
+      transform: rotate(-1.5deg); transform-origin: center;
+    }
+    .co-secure {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--mid);
+      letter-spacing: .3px;
+    }
+    .co-secure svg { color: var(--cta-dk); }
+
+    /* ─── Layout ─── */
+    .co-wrap {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      min-height: calc(100vh - 70px);
+      background: var(--cream);
+    }
+    .co-left {
+      padding: 56px 64px 80px;
+      max-width: 740px;
+      width: 100%;
+      justify-self: end;
+    }
+    .co-right {
+      background: var(--cream2);
+      padding: 56px 64px 80px;
+      border-left: 1px solid var(--line);
+    }
+
+    /* ─── Stepper ─── */
+    .stepper {
+      display: flex; align-items: center;
+      gap: 8px;
+      margin-bottom: 48px;
+    }
+    .step {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12.5px; font-weight: 600;
+      color: var(--light);
+      letter-spacing: .3px;
+      transition: color .2s;
+    }
+    .step-num {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: white;
+      border: 1.5px solid var(--line-dk);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      transition: all .2s;
+    }
+    .step.done { color: var(--mid); cursor: pointer; }
+    .step.done .step-num {
+      background: var(--cta);
+      border-color: var(--cta);
+      color: var(--cta-dk);
+    }
+    .step.active { color: var(--accent); }
+    .step.active .step-num {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+    .step-line {
+      flex: 1;
+      height: 1.5px;
+      background: var(--line-dk);
+      max-width: 60px;
+    }
+    .step.done + .step-line { background: var(--cta); }
+
+    /* ─── Section blocks ─── */
+    .co-section { margin-bottom: 40px; }
+    .co-section-head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 20px;
+    }
+    .co-section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      letter-spacing: -.5px;
+      color: var(--dark);
+    }
+    .co-section-title em { font-style: italic; color: var(--accent); }
+    .co-edit {
+      font-size: 12px; font-weight: 600;
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* Express checkout */
+    .express {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .exp-btn {
+      padding: 14px;
+      background: var(--dark); color: white;
+      border: none; border-radius: 10px;
+      font-size: 13px; font-weight: 600;
+      transition: filter .2s;
+    }
+    .exp-btn:hover { filter: brightness(1.1); }
+    .exp-btn.bcnt { background: #1d4ed8; }
+    .exp-btn.pp   { background: #ffc439; color: #003087; }
+    .express-divider {
+      text-align: center;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--mid);
+      margin: 28px 0 20px;
+      position: relative;
+    }
+    .express-divider::before, .express-divider::after {
+      content: ''; position: absolute; top: 50%;
+      width: calc(50% - 60px); height: 1px;
+      background: var(--line-dk);
+    }
+    .express-divider::before { left: 0; }
+    .express-divider::after { right: 0; }
+
+    /* Form */
+    .form-grid { display: grid; gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .grid-2-3 { display: grid; grid-template-columns: 2fr 3fr; gap: 12px; }
+
+    .field-mb { margin-bottom: 12px; }
+
+    .checkbox-row {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px; color: var(--mid);
+      margin: 12px 0;
+      cursor: pointer;
+    }
+    .checkbox-row input { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; }
+
+    /* Delivery options */
+    .delivery-list { display: flex; flex-direction: column; gap: 10px; }
+    .delivery-opt {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 18px;
+      background: white;
+      border: 1.5px solid var(--line-dk);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .delivery-opt:hover { border-color: var(--accent); }
+    .delivery-opt.on {
+      border-color: var(--accent);
+      background: rgba(129,17,105,.04);
+    }
+    .delivery-radio {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--line-dk);
+      flex-shrink: 0;
+      transition: border-color .2s;
+      position: relative;
+    }
+    .delivery-opt.on .delivery-radio {
+      border-color: var(--accent);
+    }
+    .delivery-opt.on .delivery-radio::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .delivery-info { flex: 1; }
+    .delivery-info strong {
+      display: block;
+      font-size: 14px; font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 2px;
+    }
+    .delivery-info span {
+      font-size: 12.5px; color: var(--mid);
+    }
+    .delivery-price {
+      font-family: 'DM Serif Display', serif;
+      font-size: 16px;
+      color: var(--accent);
+    }
+    .delivery-price.free { color: var(--cta-dk); font-family: 'Manrope'; font-size: 13px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+
+    /* Payment methods */
+    .pay-list { display: flex; flex-direction: column; gap: 10px; }
+    .pay-opt {
+      padding: 16px 18px;
+      background: white;
+      border: 1.5px solid var(--line-dk);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+    .pay-opt:hover { border-color: var(--accent); }
+    .pay-opt.on {
+      border-color: var(--accent);
+      background: rgba(129,17,105,.04);
+    }
+    .pay-opt-head {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .pay-logo {
+      font-size: 10px; font-weight: 800;
+      letter-spacing: .5px;
+      padding: 5px 9px;
+      border-radius: 4px;
+      color: white;
+    }
+    .pay-logo.visa { background: #1a1f71; }
+    .pay-logo.mc { background: #eb001b; }
+    .pay-logo.bcnt { background: #1d4ed8; color: white; }
+    .pay-logo.pp { background: #ffc439; color: #003087; }
+    .pay-logo.ideal { background: #cc0066; }
+    .pay-opt-name {
+      font-size: 14px; font-weight: 600;
+      flex: 1;
+    }
+    .pay-opt-body {
+      max-height: 0; overflow: hidden;
+      transition: max-height .3s ease;
+    }
+    .pay-opt.on .pay-opt-body { max-height: 200px; }
+    .pay-opt-form {
+      padding-top: 14px;
+      margin-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .card-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
+
+    /* CTA */
+    .place-order {
+      width: 100%;
+      background: var(--dark); color: white;
+      border: none;
+      padding: 17px 24px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px; font-weight: 700;
+      letter-spacing: .5px;
+      border-radius: 999px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: all .22s;
+      margin-top: 12px;
+    }
+    .place-order:hover { background: var(--accent); transform: translateY(-1px); }
+    .place-order svg { transition: transform .25s; }
+    .place-order:hover svg { transform: translateX(3px); }
+
+    .legal-note {
+      font-size: 11.5px; color: var(--mid);
+      text-align: center;
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+    .legal-note a { color: var(--accent); text-decoration: underline; }
+
+    /* Order summary (right column) */
+    .co-summary {
+      position: sticky; top: 96px;
+    }
+    .co-sum-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--dark);
+      letter-spacing: -.3px;
+      margin-bottom: 20px;
+      display: flex; justify-content: space-between; align-items: baseline;
+    }
+    .co-sum-toggle {
+      font-size: 12px; font-weight: 600;
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    .co-items {
+      display: flex; flex-direction: column; gap: 14px;
+      margin-bottom: 24px;
+    }
+    .co-item {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+    .co-item-thumb {
+      width: 56px; height: 56px;
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      padding: 6px;
+      position: relative;
+    }
+    .co-item-thumb img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+    .co-item-qty {
+      position: absolute;
+      top: -6px; right: -6px;
+      min-width: 20px; height: 20px;
+      background: var(--dark); color: white;
+      border-radius: 50%;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 5px;
+    }
+    .co-item-body { min-width: 0; }
+    .co-item-name {
+      font-size: 14px; font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 2px;
+    }
+    .co-item-meta {
+      font-size: 12px; color: var(--mid);
+    }
+    .co-item-price {
+      font-family: 'DM Serif Display', serif;
+      font-size: 16px;
+      color: var(--dark);
+    }
+
+    .co-totals {
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+    .co-totals .row {
+      display: flex; justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13.5px;
+    }
+    .co-totals .row .label { color: var(--mid); }
+    .co-totals .row .value { font-weight: 600; color: var(--dark); }
+    .co-totals .row.free .value { color: var(--cta-dk); }
+    .co-totals .total {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-top: 12px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .co-totals .total .label {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px; color: var(--dark);
+    }
+    .co-totals .total .value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px; color: var(--accent);
+    }
+
+    /* Voucher in sidebar */
+    .co-voucher {
+      margin-top: 22px;
+      display: flex; gap: 8px;
+    }
+    .co-voucher input {
+      flex: 1; padding: 10px 14px;
+      border: 1.5px solid var(--line-dk);
+      background: white;
+      border-radius: 999px;
+      font-size: 12.5px;
+      outline: none;
+    }
+    .co-voucher input:focus { border-color: var(--accent); }
+    .co-voucher button {
+      background: var(--dark); color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 12px; font-weight: 600;
+      letter-spacing: .3px;
+    }
+
+    /* Liesbeth note (sidebar) */
+    .co-liesbeth {
+      background: white;
+      border: 1.5px dashed rgba(129,17,105,.3);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-top: 24px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .co-liesbeth .lb-av {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--accent); color: white;
+      font-family: 'DM Serif Display', serif;
+      font-size: 15px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .co-liesbeth p {
+      font-family: 'Caveat', cursive;
+      font-size: 17px;
+      color: var(--accent);
+      line-height: 1.4;
+    }
+    .co-liesbeth p span {
+      display: block;
+      font-family: 'Manrope', sans-serif;
+      font-size: 11px;
+      color: var(--mid);
+      letter-spacing: .3px;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body data-screen-label="Checkout">
+
+<header class="co-hdr">
+  <a href="cart.html" class="co-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Terug naar winkelmand
+  </a>
+  <div class="co-logo">
+    <a href="index.html">
+      <div class="name">Lilybet</div>
+      <span class="tag">by Liesbeth</span>
+    </a>
+  </div>
+  <div class="co-secure">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    Veilig afrekenen
+  </div>
+</header>
+
+<div class="co-wrap">
+
+  <!-- LEFT — Form -->
+  <div class="co-left">
+
+    <!-- Stepper -->
+    <div class="stepper">
+      <div class="step done">
+        <span class="step-num">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+        </span>
+        Winkelmand
+      </div>
+      <span class="step-line"></span>
+      <div class="step active">
+        <span class="step-num">2</span>
+        Gegevens
+      </div>
+      <span class="step-line"></span>
+      <div class="step">
+        <span class="step-num">3</span>
+        Betalen
+      </div>
+    </div>
+
+    <!-- Express -->
+    <div class="co-section">
+      <div class="express">
+        <button class="exp-btn pp">PayPal</button>
+        <button class="exp-btn bcnt">Bancontact</button>
+        <button class="exp-btn">  Apple Pay</button>
+      </div>
+      <div class="express-divider">of vul je gegevens in</div>
+    </div>
+
+    <!-- Contact -->
+    <div class="co-section">
+      <div class="co-section-head">
+        <h2 class="co-section-title">Contact <em>gegevens</em></h2>
+        <a href="#" class="co-edit">Heb je een account? Inloggen →</a>
+      </div>
+      <div class="form-grid">
+        <input class="input" type="email" placeholder="E-mailadres" value="emma.peeters@gmail.com"/>
+        <label class="checkbox-row">
+          <input type="checkbox" checked/>
+          Stuur me e-mails met nieuwe collecties en aanbiedingen
+        </label>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div class="co-section">
+      <h2 class="co-section-title" style="margin-bottom:20px">Verzend<em>adres</em></h2>
+      <div class="form-grid">
+        <select class="select">
+          <option>België</option>
+          <option>Nederland</option>
+          <option>Luxemburg</option>
+          <option>Frankrijk</option>
+          <option>Duitsland</option>
+        </select>
+        <div class="grid-2">
+          <input class="input" type="text" placeholder="Voornaam" value="Emma"/>
+          <input class="input" type="text" placeholder="Achternaam" value="Peeters"/>
+        </div>
+        <input class="input" type="text" placeholder="Straat + huisnummer" value="Korte Lozanastraat 14"/>
+        <input class="input" type="text" placeholder="Bus / appartement (optioneel)"/>
+        <div class="grid-2-3">
+          <input class="input" type="text" placeholder="Postcode" value="2018"/>
+          <input class="input" type="text" placeholder="Stad" value="Antwerpen"/>
+        </div>
+        <input class="input" type="tel" placeholder="Telefoon (voor levering)" value="0498 12 34 56"/>
+        <label class="checkbox-row">
+          <input type="checkbox"/>
+          Bewaar deze gegevens voor een volgende keer
+        </label>
+      </div>
+    </div>
+
+    <!-- Delivery -->
+    <div class="co-section">
+      <h2 class="co-section-title" style="margin-bottom:20px">Levering</h2>
+      <div class="delivery-list">
+        <div class="delivery-opt on" onclick="pickDelivery(this)">
+          <div class="delivery-radio"></div>
+          <div class="delivery-info">
+            <strong>Bpost standaard · thuis</strong>
+            <span>Verwacht: vrijdag 23 mei — dinsdag 27 mei</span>
+          </div>
+          <div class="delivery-price free">Gratis</div>
+        </div>
+        <div class="delivery-opt" onclick="pickDelivery(this)">
+          <div class="delivery-radio"></div>
+          <div class="delivery-info">
+            <strong>Bpost ophaalpunt</strong>
+            <span>Verwacht: donderdag 22 mei — maandag 26 mei</span>
+          </div>
+          <div class="delivery-price">€3,95</div>
+        </div>
+        <div class="delivery-opt" onclick="pickDelivery(this)">
+          <div class="delivery-radio"></div>
+          <div class="delivery-info">
+            <strong>Express · volgende dag</strong>
+            <span>Verwacht: morgen vóór 18u</span>
+          </div>
+          <div class="delivery-price">€8,95</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment -->
+    <div class="co-section">
+      <h2 class="co-section-title" style="margin-bottom:20px">Betaal<em>methode</em></h2>
+      <div class="pay-list">
+
+        <div class="pay-opt on" onclick="pickPay(this)">
+          <div class="pay-opt-head">
+            <div class="pay-logo bcnt">Bancontact</div>
+            <span class="pay-opt-name">Bancontact</span>
+            <span style="font-size:12px;color:var(--mid)">Populair</span>
+          </div>
+          <div class="pay-opt-body">
+            <p style="padding-top:14px;font-size:13px;color:var(--mid)">Je wordt naar Bancontact doorgestuurd om je betaling te bevestigen.</p>
+          </div>
+        </div>
+
+        <div class="pay-opt" onclick="pickPay(this)">
+          <div class="pay-opt-head">
+            <div class="pay-logo visa">VISA</div>
+            <div class="pay-logo mc">MC</div>
+            <span class="pay-opt-name">Kredietkaart</span>
+          </div>
+          <div class="pay-opt-body">
+            <div class="pay-opt-form form-grid">
+              <input class="input" type="text" placeholder="Kaartnummer" inputmode="numeric"/>
+              <div class="card-row">
+                <input class="input" type="text" placeholder="Naam op de kaart"/>
+                <input class="input" type="text" placeholder="MM/JJ" inputmode="numeric"/>
+                <input class="input" type="text" placeholder="CVC" inputmode="numeric"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pay-opt" onclick="pickPay(this)">
+          <div class="pay-opt-head">
+            <div class="pay-logo ideal">iDEAL</div>
+            <span class="pay-opt-name">iDEAL</span>
+          </div>
+        </div>
+
+        <div class="pay-opt" onclick="pickPay(this)">
+          <div class="pay-opt-head">
+            <div class="pay-logo pp">PayPal</div>
+            <span class="pay-opt-name">PayPal</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <button class="place-order">
+      Bestelling plaatsen · €84,80
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+    <p class="legal-note">
+      Door te bestellen ga je akkoord met onze <a href="#">algemene voorwaarden</a> en <a href="#">privacybeleid</a>.
+    </p>
+  </div>
+
+  <!-- RIGHT — Summary -->
+  <aside class="co-right">
+    <div class="co-summary">
+      <h2 class="co-sum-title">
+        Jouw bestelling
+        <a href="cart.html" class="co-sum-toggle">Bewerken</a>
+      </h2>
+
+      <div class="co-items">
+        <div class="co-item">
+          <div class="co-item-thumb bg-peach">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefzwart-geel.png?v=1699807716" alt="" onerror="this.style.display='none'"/>
+            <span class="co-item-qty">1</span>
+          </div>
+          <div class="co-item-body">
+            <div class="co-item-name">100% Lief</div>
+            <div class="co-item-meta">Zwart &amp; Geel · "Emma"</div>
+          </div>
+          <span class="co-item-price">€24,95</span>
+        </div>
+
+        <div class="co-item">
+          <div class="co-item-thumb bg-sky">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/100stoerrood-blauw2.png?v=1699807717" alt="" onerror="this.style.display='none'"/>
+            <span class="co-item-qty">2</span>
+          </div>
+          <div class="co-item-body">
+            <div class="co-item-name">100% Stoer</div>
+            <div class="co-item-meta">Rood &amp; Blauw</div>
+          </div>
+          <span class="co-item-price">€39,90</span>
+        </div>
+
+        <div class="co-item">
+          <div class="co-item-thumb bg-lavender">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Mamasprinsesjewit-paars.png?v=1699807717" alt="" onerror="this.style.display='none'"/>
+            <span class="co-item-qty">1</span>
+          </div>
+          <div class="co-item-body">
+            <div class="co-item-name">Mama's Prinsesje</div>
+            <div class="co-item-meta">Wit &amp; Paars</div>
+          </div>
+          <span class="co-item-price">€19,95</span>
+        </div>
+      </div>
+
+      <div class="co-voucher">
+        <input type="text" placeholder="Kortingscode"/>
+        <button>Toepassen</button>
+      </div>
+
+      <div class="co-totals" style="margin-top:24px">
+        <div class="row">
+          <span class="label">Subtotaal</span>
+          <span class="value">€84,80</span>
+        </div>
+        <div class="row">
+          <span class="label">Naam-borduring (Emma)</span>
+          <span class="value">€5,00</span>
+        </div>
+        <div class="row free">
+          <span class="label">Verzending · Bpost thuis</span>
+          <span class="value">Gratis</span>
+        </div>
+        <div class="row">
+          <span class="label">Waarvan BTW (21%)</span>
+          <span class="value">€14,71</span>
+        </div>
+        <div class="total">
+          <span class="label">Totaal</span>
+          <span class="value">€84,80</span>
+        </div>
+      </div>
+
+      <div class="co-liesbeth">
+        <div class="lb-av">L</div>
+        <p>
+          Persoonlijk gemaakt voor jou ♡
+          <span>— Liesbeth · Geraardsbergen</span>
+        </p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<script>
+function pickDelivery(el) {
+  document.querySelectorAll('.delivery-opt').forEach(o => o.classList.remove('on'));
+  el.classList.add('on');
+}
+function pickPay(el) {
+  document.querySelectorAll('.pay-opt').forEach(o => o.classList.remove('on'));
+  el.classList.add('on');
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Winkel — Lilybet by Liesbeth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="brand.css" />
+
+  <style>
+    /* ─── Collection hero ─── */
+    .col-hero {
+      background: var(--beige);
+      padding: 72px 72px 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .col-script {
+      font-family: 'Caveat', cursive;
+      font-size: 24px;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: block;
+    }
+    .col-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(46px, 5.5vw, 80px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -1.5px;
+      color: var(--dark);
+      margin-bottom: 14px;
+    }
+    .col-title em { font-style: italic; color: var(--accent); }
+    .col-sub {
+      font-size: 15.5px;
+      color: var(--mid);
+      max-width: 540px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Category pills */
+    .cat-pills {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: 8px; margin-top: 32px;
+    }
+    .cat-pill {
+      padding: 10px 18px;
+      background: white;
+      border: 1.5px solid transparent;
+      border-radius: 999px;
+      font-size: 13px; font-weight: 500;
+      color: var(--dark);
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .cat-pill:hover { border-color: var(--accent); }
+    .cat-pill.on {
+      background: var(--dark); color: white;
+    }
+    .cat-pill .count {
+      opacity: .55; margin-left: 6px;
+      font-size: 11px;
+    }
+
+    /* ─── Toolbar ─── */
+    .toolbar {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 22px 72px;
+      background: var(--cream);
+      border-bottom: 1px solid var(--line);
+      position: sticky; top: 87px; z-index: 100;
+    }
+    .tb-results {
+      font-size: 13px;
+      color: var(--mid);
+    }
+    .tb-results strong { color: var(--dark); font-weight: 600; }
+    .tb-right {
+      display: flex; gap: 12px; align-items: center;
+    }
+    .tb-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 8px 16px;
+      background: white;
+      border: 1.5px solid var(--line-dk);
+      border-radius: 999px;
+      font-size: 13px; font-weight: 500;
+      color: var(--dark);
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .tb-btn:hover { border-color: var(--accent); }
+    .tb-btn svg { color: var(--mid); }
+
+    .sort-select {
+      padding: 8px 32px 8px 16px;
+      background: white url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a6e60' stroke-width='2.5' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center;
+      border: 1.5px solid var(--line-dk);
+      border-radius: 999px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      color: var(--dark);
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+    }
+
+    /* ─── Layout ─── */
+    .col-wrap {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 48px;
+      padding: 48px 72px 96px;
+    }
+
+    /* Sidebar filters */
+    .filters {
+      align-self: start;
+      position: sticky; top: 160px;
+    }
+    .filter-group {
+      padding: 22px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .filter-group:first-child { padding-top: 0; }
+    .filter-head {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      color: var(--dark);
+    }
+    .filter-head svg { color: var(--mid); transition: transform .2s; }
+
+    .check-list { display: flex; flex-direction: column; gap: 10px; }
+    .check-list label {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13.5px;
+      color: var(--dark);
+      cursor: pointer;
+    }
+    .check-list input {
+      width: 17px; height: 17px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .check-list .ct {
+      margin-left: auto;
+      font-size: 12px; color: var(--light);
+    }
+
+    /* Color filter */
+    .color-grid {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .col-sw {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2.5px solid transparent;
+      transition: all .15s;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.1);
+    }
+    .col-sw:hover { transform: scale(1.15); }
+    .col-sw.on { border-color: var(--dark); }
+
+    /* Price range (decorative) */
+    .price-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: var(--mid);
+      margin-top: 10px;
+    }
+    .price-row input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1.5px solid var(--line-dk);
+      border-radius: 8px;
+      font-size: 13px;
+      outline: none;
+      background: white;
+    }
+    .price-bar {
+      height: 4px;
+      background: var(--cream2);
+      border-radius: 2px;
+      position: relative;
+      margin: 14px 0;
+    }
+    .price-bar::after {
+      content: '';
+      position: absolute;
+      left: 8%; right: 18%; top: 0; bottom: 0;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    .price-bar::before, .price-bar > span {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 14px; height: 14px;
+      background: white;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      transform: translateY(-50%);
+    }
+    .price-bar::before { left: 8%; }
+    .price-bar > span { right: 18%; }
+
+    .clear-filters {
+      width: 100%;
+      padding: 12px;
+      background: none;
+      border: 1.5px solid var(--line-dk);
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--dark);
+      margin-top: 16px;
+      transition: all .2s;
+    }
+    .clear-filters:hover { background: var(--dark); color: white; border-color: var(--dark); }
+
+    /* Product grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px 24px;
+    }
+
+    .gcard {
+      cursor: pointer;
+      display: block;
+      transition: transform .3s ease;
+    }
+    .gcard:hover { transform: translateY(-5px); }
+    .gcard:hover .gcard-photo { box-shadow: 0 18px 36px rgba(42,31,31,.13); }
+
+    .gcard-photo {
+      background: white;
+      padding: 14px 14px 20px;
+      box-shadow: 0 6px 22px rgba(42,31,31,.06);
+      margin-bottom: 14px;
+      position: relative;
+      transition: box-shadow .3s ease;
+      border-radius: 4px;
+    }
+    .gcard-img {
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .gcard-img img {
+      width: 88%; height: 88%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      transition: transform .5s ease;
+    }
+    .gcard:hover .gcard-img img { transform: scale(1.05); }
+
+    .gcard-tag {
+      position: absolute;
+      top: 24px; left: 24px;
+      font-family: 'Caveat', cursive;
+      font-size: 16px;
+      color: var(--accent);
+      transform: rotate(-5deg);
+      transform-origin: left;
+      z-index: 2;
+    }
+    .gcard-fav {
+      position: absolute;
+      top: 18px; right: 18px;
+      width: 32px; height: 32px;
+      border: none;
+      background: rgba(255,255,255,.85);
+      backdrop-filter: blur(4px);
+      border-radius: 50%;
+      color: var(--dark);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transition: opacity .2s, color .2s, background .2s;
+      cursor: pointer;
+    }
+    .gcard:hover .gcard-fav { opacity: 1; }
+    .gcard-fav:hover { color: var(--accent); background: white; }
+    .gcard-fav.on { opacity: 1; color: var(--accent); background: white; }
+
+    .gcard-info {
+      padding: 0 4px;
+    }
+    .gcard-cat {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 1.3px; text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 4px;
+    }
+    .gcard-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--dark);
+      letter-spacing: -.3px;
+      margin-bottom: 6px;
+    }
+    .gcard-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .gcard-swatches {
+      display: flex; gap: 5px;
+    }
+    .gcard-swatches .gsw {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.1);
+    }
+    .gcard-price {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      color: var(--accent);
+    }
+    .gcard-price-old {
+      font-size: 13px;
+      color: var(--light);
+      text-decoration: line-through;
+      margin-right: 6px;
+    }
+
+    /* Pagination */
+    .pagi {
+      display: flex; justify-content: center; align-items: center;
+      gap: 4px;
+      margin-top: 56px;
+    }
+    .pagi button {
+      min-width: 36px; height: 36px;
+      border-radius: 50%;
+      background: none;
+      border: 1.5px solid transparent;
+      color: var(--dark);
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .pagi button:hover { border-color: var(--accent); color: var(--accent); }
+    .pagi button.on {
+      background: var(--dark); color: white;
+      border-color: var(--dark);
+    }
+    .pagi .arrow { color: var(--mid); }
+
+    /* Pinned product (highlight) - same as gcard but bigger */
+    .grid .feat {
+      grid-column: span 2; grid-row: span 1;
+    }
+
+    /* About strip at bottom */
+    .col-about {
+      background: var(--beige);
+      padding: 64px 72px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+    .col-about-text h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 36px;
+      color: var(--dark);
+      margin-bottom: 14px;
+      line-height: 1.1;
+      letter-spacing: -.8px;
+    }
+    .col-about-text h2 em { font-style: italic; color: var(--accent); }
+    .col-about-text p {
+      font-size: 15px;
+      color: var(--mid);
+      line-height: 1.75;
+      margin-bottom: 24px;
+      max-width: 460px;
+    }
+  </style>
+</head>
+<body data-screen-label="Collection · Shop">
+
+<div class="ann">
+  Gratis verzending vanaf €50 · Handgemaakt <em>met liefde</em> in Geraardsbergen
+</div>
+
+<header class="hdr" id="hdr">
+  <nav class="nav-l">
+    <a href="collection.html">Winkel</a>
+    <a href="#">Collecties</a>
+    <a href="#">Personaliseer</a>
+  </nav>
+  <div class="masthead">
+    <a href="index.html">
+      <div class="masthead-name">Lilybet</div>
+      <span class="masthead-tag">by Liesbeth</span>
+    </a>
+  </div>
+  <nav class="nav-r">
+    <a href="#">Atelier</a>
+    <a href="#">Contact</a>
+    <div class="icons-row">
+      <button class="icn" aria-label="Zoeken">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <a href="cart.html" class="icn" aria-label="Winkelmand">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count">2</span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<!-- Collection hero -->
+<section class="col-hero">
+  <span class="col-script">de hele collectie ♡</span>
+  <h1 class="col-title">Onze <em>handgemaakte</em> winkel</h1>
+  <p class="col-sub">Borduringen, rompertjes, doopaandenken en gepersonaliseerde stukken — allemaal met dezelfde liefde en aandacht gemaakt door Liesbeth.</p>
+
+  <div class="cat-pills">
+    <button class="cat-pill on">Alles <span class="count">28</span></button>
+    <button class="cat-pill">100% Lief <span class="count">5</span></button>
+    <button class="cat-pill">100% Stoer <span class="count">4</span></button>
+    <button class="cat-pill">Mama's Prinsesje <span class="count">3</span></button>
+    <button class="cat-pill">Papa's Prinsesje <span class="count">3</span></button>
+    <button class="cat-pill">Mama's Mooiste <span class="count">4</span></button>
+    <button class="cat-pill">Cadeaubonnen <span class="count">2</span></button>
+  </div>
+</section>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="tb-results"><strong>28 producten</strong> · gesorteerd op populariteit</div>
+  <div class="tb-right">
+    <button class="tb-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+      Filters · 3
+    </button>
+    <select class="sort-select">
+      <option>Populairste eerst</option>
+      <option>Nieuw eerst</option>
+      <option>Prijs: laag → hoog</option>
+      <option>Prijs: hoog → laag</option>
+      <option>Bestverkocht</option>
+    </select>
+  </div>
+</div>
+
+<!-- Main layout -->
+<div class="col-wrap">
+
+  <!-- Filters -->
+  <aside class="filters">
+    <div class="filter-group">
+      <div class="filter-head">Voor wie?</div>
+      <div class="check-list">
+        <label><input type="checkbox" checked/>Baby (0-2j) <span class="ct">12</span></label>
+        <label><input type="checkbox" checked/>Peuter (2-6j) <span class="ct">9</span></label>
+        <label><input type="checkbox"/>Kleuter (6-10j) <span class="ct">4</span></label>
+        <label><input type="checkbox"/>Mama &amp; Papa <span class="ct">7</span></label>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-head">Kleur</div>
+      <div class="color-grid">
+        <div class="col-sw on" style="background:#1a1a1a" title="Zwart"></div>
+        <div class="col-sw" style="background:#f5d020" title="Geel"></div>
+        <div class="col-sw on" style="background:#c0392b" title="Rood"></div>
+        <div class="col-sw" style="background:#2471a3" title="Blauw"></div>
+        <div class="col-sw" style="background:#7d3c98" title="Paars"></div>
+        <div class="col-sw" style="background:#e87040" title="Oranje"></div>
+        <div class="col-sw on" style="background:#e8a0c0" title="Roze"></div>
+        <div class="col-sw" style="background:#ffffff;box-shadow:inset 0 0 0 1.5px #ccc" title="Wit"></div>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-head">Prijs</div>
+      <div class="price-bar"><span></span></div>
+      <div class="price-row">
+        <input type="text" value="€10" />
+        <span>—</span>
+        <input type="text" value="€40" />
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <div class="filter-head">Opties</div>
+      <div class="check-list">
+        <label><input type="checkbox" checked/>Te personaliseren <span class="ct">18</span></label>
+        <label><input type="checkbox"/>Nieuwe collectie <span class="ct">6</span></label>
+        <label><input type="checkbox"/>Limited edition <span class="ct">3</span></label>
+        <label><input type="checkbox"/>Sale <span class="ct">4</span></label>
+      </div>
+    </div>
+
+    <button class="clear-filters">Filters wissen</button>
+  </aside>
+
+  <!-- Grid -->
+  <div>
+    <div class="grid" id="grid">
+
+      <a class="gcard" href="product.html">
+        <div class="gcard-photo">
+          <span class="gcard-tag">bestseller</span>
+          <button class="gcard-fav" onclick="event.preventDefault();this.classList.toggle('on')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <div class="gcard-img bg-peach">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefzwart-geel.png?v=1699807716" alt="" onerror="this.style.display='none'"/>
+          </div>
+        </div>
+        <div class="gcard-info">
+          <div class="gcard-cat">Voor de kleinste</div>
+          <h3 class="gcard-name">100% Lief</h3>
+          <div class="gcard-bottom">
+            <div class="gcard-swatches">
+              <div class="gsw" style="background:#1a1a1a"></div>
+              <div class="gsw" style="background:#1a6bb5"></div>
+              <div class="gsw" style="background:#e060b8"></div>
+              <div class="gsw" style="background:#a8c8e8"></div>
+              <div class="gsw" style="background:#7d3c98"></div>
+            </div>
+            <span class="gcard-price">€19,95</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="gcard" href="product.html">
+        <div class="gcard-photo">
+          <span class="gcard-tag">stoer ★</span>
+          <button class="gcard-fav" onclick="event.preventDefault();this.classList.toggle('on')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <div class="gcard-img bg-sky">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/100stoerrood-blauw2.png?v=1699807717" alt="" onerror="this.style.display='none'"/>
+          </div>
+        </div>
+        <div class="gcard-info">
+          <div class="gcard-cat">Avontuur</div>
+          <h3 class="gcard-name">100% Stoer</h3>
+          <div class="gcard-bottom">
+            <div class="gcard-swatches">
+              <div class="gsw" style="background:#c0392b"></div>
+              <div class="gsw" style="background:#2471a3"></div>
+              <div class="gsw" style="background:#e87040"></div>
+              <div class="gsw" style="background:#f5d020"></div>
+            </div>
+            <span class="gcard-price">€19,95</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="gcard" href="product.html">
+        <div class="gcard-photo">
+          <span class="gcard-tag">voor mama</span>
+          <button class="gcard-fav on" onclick="event.preventDefault();this.classList.toggle('on')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <div class="gcard-img bg-lavender">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Mamasprinsesjewit-paars.png?v=1699807717" alt="" onerror="this.style.display='none'"/>
+          </div>
+        </div>
+        <div class="gcard-info">
+          <div class="gcard-cat">Voor mama</div>
+          <h3 class="gcard-name">Mama's Prinsesje</h3>
+          <div class="gcard-bottom">
+            <div class="gcard-swatches">
+              <div class="gsw" style="background:#7d3c98"></div>
+              <div class="gsw" style="background:#e060b8"></div>
+              <div class="gsw" style="background:#a8c8e8"></div>
+            </div>
+            <span class="gcard-price">€19,95</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="gcard" href="product.html">
+        <div class="gcard-photo">
+          <span class="gcard-tag">voor papa</span>
+          <button class="gcard-fav" onclick="event.preventDefault();this.classList.toggle('on')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <div class="gcard-img bg-sage">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Papasprinsesjeroos2-blauw1.png?v=1699807721" alt="" onerror="this.style.display='none'"/>
+          </div>
+        </div>
+        <div class="gcard-info">
+          <div class="gcard-cat">Voor papa</div>
+          <h3 class="gcard-name">Papa's Prinsesje</h3>
+          <div class="gcard-bottom">
+            <div class="gcard-swatches">
+              <div class="gsw" style="background:#e8a0c0"></div>
+              <div class="gsw" style="background:#2471a3"></div>
+              <div class="gsw" style="background:#1a4a8a"></div>
+            </div>
+            <span class="gcard-price">€19,95</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="gcard" href="product.html">
+        <div class="gcard-photo">
+          <span class="gcard-tag">mooiste</span>
+          <button class="gcard-fav" onclick="event.preventDefault();this.classList.toggle('on')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <div class="gcard-img bg-rose">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Mamasmooisterood-geel.png?v=1699807720" alt="" onerror="this.style.display='none'"/>
+          </div>
+        </div>
+        <div class="gcard-info">
+          <div class="gcard-cat">Voor mama</div>
+          <h3 class="gcard-name">Mama's Mooiste</h3>
+          <div class="gcard-bottom">
+            <div class="gcard-swatches">
+              <div class="gsw" style="background:#c0392b"></div>
+              <div class="gsw" style="background:#f5d020"></div>
+              <div class="gsw" style="background:#e87040"></div>
+              <div class="gsw" style="background:#7d3c98"></div>
+            </div>
+            <span class="gcard-price">€19,95</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="gcard" href="product.html">
+        <div class="gcard-photo">
+          <span class="gcard-tag">limited ★</span>
+          <button class="gcard-fav" onclick="event.preventDefault();this.classList.toggle('on')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <div class="gcard-img bg-butter">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/100stoeroranje-geel.png?v=1699807721" alt="" onerror="this.style.display='none'"/>
+          </div>
+        </div>
+        <div class="gcard-info">
+          <div class="gcard-cat">Limited edition</div>
+          <h3 class="gcard-name">100% Stoer · Oranje</h3>
+          <div class="gcard-bottom">
+            <div class="gcard-swatches">
+              <div class="gsw" style="background:#e87040"></div>
+              <div class="gsw" style="background:#f5d020"></div>
+            </div>
+            <span>
+              <span class="gcard-price-old">€24,95</span>
+              <span class="gcard-price">€21,95</span>
+            </span>
+          </div>
+        </div>
+      </a>
+
+      <a class="gcard" href="product.html">
+        <div class="gcard-photo">
+          <span class="gcard-tag">100% lief ♡</span>
+          <button class="gcard-fav" onclick="event.preventDefault();this.classList.toggle('on')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <div class="gcard-img bg-rose">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefroos-paars.png?v=1699807720" alt="" onerror="this.style.display='none'"/>
+          </div>
+        </div>
+        <div class="gcard-info">
+          <div class="gcard-cat">Voor de kleinste</div>
+          <h3 class="gcard-name">100% Lief · Roze</h3>
+          <div class="gcard-bottom">
+            <div class="gcard-swatches">
+              <div class="gsw" style="background:#e8a0c0"></div>
+              <div class="gsw" style="background:#7d3c98"></div>
+            </div>
+            <span class="gcard-price">€19,95</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="gcard" href="product.html">
+        <div class="gcard-photo">
+          <span class="gcard-tag">stoer</span>
+          <button class="gcard-fav" onclick="event.preventDefault();this.classList.toggle('on')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <div class="gcard-img bg-butter">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/100stoerblauw2-geel.png?v=1699807721" alt="" onerror="this.style.display='none'"/>
+          </div>
+        </div>
+        <div class="gcard-info">
+          <div class="gcard-cat">Avontuur</div>
+          <h3 class="gcard-name">100% Stoer · Blauw</h3>
+          <div class="gcard-bottom">
+            <div class="gcard-swatches">
+              <div class="gsw" style="background:#2471a3"></div>
+              <div class="gsw" style="background:#f5d020"></div>
+            </div>
+            <span class="gcard-price">€19,95</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="gcard" href="product.html">
+        <div class="gcard-photo">
+          <span class="gcard-tag">100% lief</span>
+          <button class="gcard-fav" onclick="event.preventDefault();this.classList.toggle('on')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          </button>
+          <div class="gcard-img bg-sky">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefblauw2-geel.png?v=1699807718" alt="" onerror="this.style.display='none'"/>
+          </div>
+        </div>
+        <div class="gcard-info">
+          <div class="gcard-cat">Voor de kleinste</div>
+          <h3 class="gcard-name">100% Lief · Blauw</h3>
+          <div class="gcard-bottom">
+            <div class="gcard-swatches">
+              <div class="gsw" style="background:#1a6bb5"></div>
+              <div class="gsw" style="background:#f5d020"></div>
+            </div>
+            <span class="gcard-price">€19,95</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagi">
+      <button class="arrow">‹</button>
+      <button class="on">1</button>
+      <button>2</button>
+      <button>3</button>
+      <button>4</button>
+      <button class="arrow">›</button>
+    </div>
+  </div>
+</div>
+
+<!-- About strip -->
+<section class="col-about">
+  <div>
+    <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/achtergrond.webp?v=1700057550" alt="" style="width:100%;border-radius:14px;aspect-ratio:5/4;object-fit:cover" onerror="this.style.display='none'"/>
+  </div>
+  <div class="col-about-text">
+    <span class="script" style="font-size:24px;color:var(--accent);display:block;margin-bottom:6px">één voor één gemaakt</span>
+    <h2>Niet zomaar een<br><em>winkeltje.</em></h2>
+    <p>Elk stuk dat je hier vindt is door mij persoonlijk gemaakt — geen massaproductie, geen voorraad uit een fabriek. Vraag je iets speciaals? Laat het weten, ik maak het graag op maat voor jouw gezin.</p>
+    <a href="#" class="btn btn-ghost">Lees mijn verhaal →</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="ft-grid">
+    <div>
+      <div class="ft-logo">Lilybet</div>
+      <span class="ft-tag">by Liesbeth</span>
+      <p class="ft-desc">Handgemaakte kinderkledij uit een klein atelier in Geraardsbergen, België.</p>
+      <div class="ft-soc">
+        <a href="#" aria-label="Facebook"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+      </div>
+    </div>
+    <div class="ft-col"><h4>Winkel</h4><ul><li><a href="collection.html">Alle producten</a></li><li><a href="#">100% Lief</a></li><li><a href="#">100% Stoer</a></li><li><a href="#">Mama &amp; Papa</a></li></ul></div>
+    <div class="ft-col"><h4>Info</h4><ul><li><a href="#">Over Lilybet</a></li><li><a href="#">Verzending</a></li><li><a href="#">FAQ</a></li></ul></div>
+    <div class="ft-col"><h4>Atelier</h4><ul><li><a href="#">Adamstraat 8</a></li><li><a href="#">9500 Geraardsbergen</a></li></ul></div>
+  </div>
+  <div class="ft-bot">
+    <p>© 2025 Lilybet by Liesbeth</p>
+    <div class="ft-pays"><span class="ft-pay">VISA</span><span class="ft-pay">MC</span><span class="ft-pay">Bancontact</span></div>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  document.getElementById('hdr').classList.toggle('shrunk', window.scrollY > 20);
+}, { passive: true });
+
+// Category pills
+document.querySelectorAll('.cat-pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('.cat-pill').forEach(x => x.classList.remove('on'));
+    p.classList.add('on');
+  });
+});
+
+// Color swatches
+document.querySelectorAll('.col-sw').forEach(s => {
+  s.addEventListener('click', () => s.classList.toggle('on'));
+});
+</script>
+
+</body>
+</html>

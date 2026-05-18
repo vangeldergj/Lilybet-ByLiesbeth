@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Winkelmand — Lilybet by Liesbeth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="brand.css" />
+
+  <style>
+    /* ─── CART PAGE ─── */
+    .cart-wrap {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 48px 56px 96px;
+    }
+    .cart-hero {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .cart-hero .script {
+      font-size: 22px;
+      color: var(--accent);
+      margin-bottom: 4px;
+      display: block;
+    }
+    .cart-hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(40px, 4.5vw, 64px);
+      font-weight: 400;
+      letter-spacing: -1.2px;
+      line-height: 1.05;
+      color: var(--dark);
+    }
+    .cart-hero h1 em { font-style: italic; color: var(--accent); }
+
+    .cart-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 48px;
+      align-items: start;
+    }
+
+    /* Items */
+    .items {
+      background: var(--cream2);
+      border-radius: 16px;
+      padding: 8px 0;
+    }
+    .item {
+      display: grid;
+      grid-template-columns: 96px 1fr auto;
+      gap: 20px;
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--line);
+      align-items: center;
+    }
+    .item:last-child { border-bottom: none; }
+
+    .item-thumb {
+      width: 96px; height: 96px;
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      padding: 10px;
+    }
+    .item-thumb img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+
+    .item-body { min-width: 0; }
+    .item-cat {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 4px;
+    }
+    .item-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--dark);
+      letter-spacing: -.4px;
+      margin-bottom: 6px;
+    }
+    .item-name em { font-style: italic; color: var(--accent); }
+    .item-meta {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      font-size: 12.5px; color: var(--mid);
+      margin-bottom: 4px;
+    }
+    .item-meta-dot {
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .item-meta-dot::before {
+      content: '';
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--c, var(--accent));
+      flex-shrink: 0;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.1);
+    }
+    .item-personal {
+      font-family: 'Caveat', cursive;
+      font-size: 17px;
+      color: var(--accent);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .item-personal svg { color: var(--accent); }
+
+    .item-actions {
+      display: flex; flex-direction: column; align-items: flex-end; gap: 14px;
+    }
+    .item-price {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      color: var(--dark);
+      letter-spacing: -.4px;
+    }
+
+    .item-qty {
+      display: flex; align-items: center;
+      border: 1px solid var(--line-dk);
+      border-radius: 999px;
+      background: white;
+      padding: 3px;
+    }
+    .item-qty button {
+      width: 28px; height: 28px;
+      background: none; border: none;
+      border-radius: 50%;
+      font-size: 14px;
+      color: var(--dark);
+      transition: background .2s;
+    }
+    .item-qty button:hover { background: var(--cream); }
+    .item-qty span {
+      min-width: 24px;
+      text-align: center;
+      font-size: 13px; font-weight: 600;
+    }
+    .item-remove {
+      background: none; border: none;
+      font-size: 12px;
+      color: var(--mid);
+      display: flex; align-items: center; gap: 4px;
+      transition: color .2s;
+    }
+    .item-remove:hover { color: var(--accent); }
+
+    /* Empty hint / cart info row */
+    .cart-tools {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-top: 24px;
+      flex-wrap: wrap; gap: 12px;
+    }
+    .cart-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 500;
+      color: var(--mid);
+      transition: color .2s;
+    }
+    .cart-back:hover { color: var(--accent); }
+
+    .voucher {
+      display: flex; gap: 8px; align-items: center;
+    }
+    .voucher input {
+      padding: 10px 14px;
+      border: 1.5px solid var(--line-dk);
+      background: white;
+      border-radius: 999px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px;
+      outline: none;
+      width: 200px;
+    }
+    .voucher input:focus { border-color: var(--accent); }
+    .voucher button {
+      background: none; border: none;
+      font-size: 12px; font-weight: 600;
+      color: var(--dark);
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      padding: 10px 14px;
+    }
+    .voucher button:hover { color: var(--accent); }
+
+    /* Summary */
+    .summary {
+      background: var(--beige);
+      border-radius: 16px;
+      padding: 32px 30px;
+      position: sticky; top: 120px;
+    }
+    .sum-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 24px;
+      color: var(--dark);
+      margin-bottom: 22px;
+      letter-spacing: -.4px;
+    }
+    .sum-row {
+      display: flex; justify-content: space-between;
+      padding: 10px 0;
+      font-size: 14px;
+      color: var(--dark);
+    }
+    .sum-row .label { color: var(--mid); }
+    .sum-row .value { font-weight: 600; }
+    .sum-row.discount .value { color: var(--accent); }
+    .sum-sep {
+      height: 1px;
+      background: rgba(42,31,31,.12);
+      margin: 14px 0;
+    }
+    .sum-total {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 4px;
+    }
+    .sum-total .label {
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      color: var(--dark);
+    }
+    .sum-total .value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 30px;
+      color: var(--accent);
+      letter-spacing: -.5px;
+    }
+    .sum-vat {
+      font-size: 11.5px;
+      color: var(--mid);
+      text-align: right;
+      margin-bottom: 24px;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      background: var(--dark); color: white;
+      border: none;
+      padding: 16px 24px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13.5px; font-weight: 700;
+      letter-spacing: .5px;
+      border-radius: 999px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: background .22s, transform .2s;
+      text-decoration: none;
+    }
+    .checkout-btn:hover { background: var(--accent); transform: translateY(-1px); }
+
+    .sum-perks {
+      margin-top: 22px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(42,31,31,.1);
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .perk {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12.5px;
+      color: var(--mid);
+    }
+    .perk svg { color: var(--cta-dk); flex-shrink: 0; }
+    .perk strong { color: var(--dark); font-weight: 600; }
+
+    .pays-info {
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(42,31,31,.1);
+      display: flex; flex-wrap: wrap; gap: 6px;
+      align-items: center;
+    }
+    .pay-tag {
+      background: white;
+      border: 1px solid var(--line);
+      font-size: 10px; font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 4px;
+      color: var(--dark);
+      letter-spacing: .5px;
+    }
+
+    /* Liesbeth note */
+    .liesbeth-note {
+      background: white;
+      border: 1.5px dashed rgba(129,17,105,.3);
+      border-radius: 14px;
+      padding: 20px 22px;
+      margin-top: 24px;
+      display: flex; gap: 14px; align-items: flex-start;
+    }
+    .liesbeth-note .lb-av {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--accent); color: white;
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .liesbeth-note p {
+      font-family: 'Caveat', cursive;
+      font-size: 19px;
+      color: var(--accent);
+      line-height: 1.4;
+    }
+    .liesbeth-note p span {
+      display: block;
+      font-family: 'Manrope', sans-serif;
+      font-size: 12px;
+      color: var(--mid);
+      margin-top: 4px;
+      letter-spacing: .3px;
+    }
+
+    /* Empty state */
+    .empty {
+      text-align: center;
+      padding: 80px 20px;
+      background: var(--cream2);
+      border-radius: 16px;
+    }
+
+    /* Recommended */
+    .reco {
+      margin-top: 88px;
+    }
+    .reco-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 36px;
+    }
+    .reco-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .rcard { cursor: pointer; transition: transform .3s; }
+    .rcard:hover { transform: translateY(-4px); }
+    .rcard-photo {
+      background: white;
+      padding: 12px 12px 18px;
+      box-shadow: 0 6px 20px rgba(42,31,31,.06);
+      margin-bottom: 12px;
+      border-radius: 4px;
+    }
+    .rcard-img {
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .rcard-img img {
+      width: 86%; height: 86%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+    .rcard-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 17px;
+      color: var(--dark);
+      margin-bottom: 2px;
+    }
+    .rcard-price {
+      font-size: 14px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body data-screen-label="Cart">
+
+<div class="ann">
+  Gratis verzending vanaf €50 · Handgemaakt <em>met liefde</em> in Geraardsbergen
+</div>
+
+<header class="hdr" id="hdr">
+  <nav class="nav-l">
+    <a href="collection.html">Winkel</a>
+    <a href="#">Collecties</a>
+    <a href="#">Personaliseer</a>
+  </nav>
+  <div class="masthead">
+    <a href="index.html">
+      <div class="masthead-name">Lilybet</div>
+      <span class="masthead-tag">by Liesbeth</span>
+    </a>
+  </div>
+  <nav class="nav-r">
+    <a href="#">Atelier</a>
+    <a href="#">Contact</a>
+    <div class="icons-row">
+      <button class="icn" aria-label="Zoeken">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <a href="cart.html" class="icn" aria-label="Winkelmand">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cart-count">3</span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<div class="cart-wrap">
+  <div class="cart-hero">
+    <span class="script">jouw selectie ♡</span>
+    <h1>Mijn <em>winkelmand</em></h1>
+  </div>
+
+  <div class="cart-grid">
+
+    <!-- ITEMS -->
+    <div>
+      <div class="items" id="items">
+
+        <div class="item" data-price="24.95" data-qty="1">
+          <div class="item-thumb bg-peach">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefzwart-geel.png?v=1699807716" alt="" onerror="this.style.display='none'"/>
+          </div>
+          <div class="item-body">
+            <div class="item-cat">Borduring</div>
+            <h3 class="item-name">100% <em>Lief</em></h3>
+            <div class="item-meta">
+              <span class="item-meta-dot" style="--c:#1a1a1a">Zwart &amp; Geel</span>
+              <span>·</span>
+              <span>10 × 6 cm</span>
+            </div>
+            <p class="item-personal">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+              gepersonaliseerd: "Emma" (+€5)
+            </p>
+          </div>
+          <div class="item-actions">
+            <span class="item-price">€24,95</span>
+            <div class="item-qty">
+              <button onclick="adj(this,-1)" aria-label="Min">−</button>
+              <span>1</span>
+              <button onclick="adj(this,1)" aria-label="Plus">+</button>
+            </div>
+            <button class="item-remove" onclick="this.closest('.item').remove();updateTotals();">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              Verwijderen
+            </button>
+          </div>
+        </div>
+
+        <div class="item" data-price="19.95" data-qty="2">
+          <div class="item-thumb bg-sky">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/100stoerrood-blauw2.png?v=1699807717" alt="" onerror="this.style.display='none'"/>
+          </div>
+          <div class="item-body">
+            <div class="item-cat">Borduring</div>
+            <h3 class="item-name">100% <em>Stoer</em></h3>
+            <div class="item-meta">
+              <span class="item-meta-dot" style="--c:#c0392b">Rood &amp; Blauw</span>
+              <span>·</span>
+              <span>10 × 6 cm</span>
+            </div>
+          </div>
+          <div class="item-actions">
+            <span class="item-price">€39,90</span>
+            <div class="item-qty">
+              <button onclick="adj(this,-1)" aria-label="Min">−</button>
+              <span>2</span>
+              <button onclick="adj(this,1)" aria-label="Plus">+</button>
+            </div>
+            <button class="item-remove" onclick="this.closest('.item').remove();updateTotals();">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              Verwijderen
+            </button>
+          </div>
+        </div>
+
+        <div class="item" data-price="19.95" data-qty="1">
+          <div class="item-thumb bg-lavender">
+            <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Mamasprinsesjewit-paars.png?v=1699807717" alt="" onerror="this.style.display='none'"/>
+          </div>
+          <div class="item-body">
+            <div class="item-cat">Borduring</div>
+            <h3 class="item-name">Mama's <em>Prinsesje</em></h3>
+            <div class="item-meta">
+              <span class="item-meta-dot" style="--c:#7d3c98">Wit &amp; Paars</span>
+              <span>·</span>
+              <span>10 × 6 cm</span>
+            </div>
+          </div>
+          <div class="item-actions">
+            <span class="item-price">€19,95</span>
+            <div class="item-qty">
+              <button onclick="adj(this,-1)" aria-label="Min">−</button>
+              <span>1</span>
+              <button onclick="adj(this,1)" aria-label="Plus">+</button>
+            </div>
+            <button class="item-remove" onclick="this.closest('.item').remove();updateTotals();">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              Verwijderen
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="cart-tools">
+        <a href="collection.html" class="cart-back">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Verder winkelen
+        </a>
+        <div class="voucher">
+          <input type="text" placeholder="Kortingscode"/>
+          <button>Toepassen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <aside class="summary" id="summary">
+      <h2 class="sum-title">Overzicht</h2>
+
+      <div class="sum-row">
+        <span class="label">Subtotaal</span>
+        <span class="value" id="sub-val">€84,80</span>
+      </div>
+      <div class="sum-row discount">
+        <span class="label">Naam-borduring (Emma)</span>
+        <span class="value">+€5,00</span>
+      </div>
+      <div class="sum-row">
+        <span class="label">Verzending</span>
+        <span class="value" style="color: var(--cta-dk)">Gratis</span>
+      </div>
+
+      <div class="sum-sep"></div>
+
+      <div class="sum-total">
+        <span class="label">Totaal</span>
+        <span class="value" id="tot-val">€84,80</span>
+      </div>
+      <p class="sum-vat">incl. 21% BTW · betaling beveiligd</p>
+
+      <a href="checkout.html" class="checkout-btn">
+        Doorgaan naar checkout
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+
+      <div class="sum-perks">
+        <div class="perk">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <span><strong>Handgemaakt</strong> · klaar in 3-5 dagen</span>
+        </div>
+        <div class="perk">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg>
+          <span><strong>Gratis verzending</strong> in BE/NL</span>
+        </div>
+        <div class="perk">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+          <span><strong>30 dagen retour</strong> · ook gepersonaliseerd</span>
+        </div>
+      </div>
+
+      <div class="pays-info">
+        <span class="pay-tag">VISA</span>
+        <span class="pay-tag">MC</span>
+        <span class="pay-tag">Bancontact</span>
+        <span class="pay-tag">iDEAL</span>
+        <span class="pay-tag">PayPal</span>
+      </div>
+
+      <div class="liesbeth-note">
+        <div class="lb-av">L</div>
+        <p>
+          Dankjewel voor je vertrouwen!
+          <span>— Liesbeth, persoonlijk gemaakt voor jou</span>
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Recommended -->
+  <section class="reco">
+    <div class="reco-head">
+      <div>
+        <div class="eyebrow eyebrow-accent" style="margin-bottom:8px">Bestellen ouders ook vaak</div>
+        <h2 class="sec-title" style="font-size:32px">Misschien <em>vergeten?</em></h2>
+      </div>
+      <a href="collection.html" class="btn-link">Alle producten →</a>
+    </div>
+
+    <div class="reco-grid">
+      <a class="rcard" href="product.html">
+        <div class="rcard-photo">
+          <div class="rcard-img bg-sage"><img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Papasprinsesjeroos2-blauw1.png?v=1699807721" alt="" onerror="this.style.display='none'"/></div>
+        </div>
+        <h3 class="rcard-name">Papa's Prinsesje</h3>
+        <p class="rcard-price">€19,95</p>
+      </a>
+      <a class="rcard" href="product.html">
+        <div class="rcard-photo">
+          <div class="rcard-img bg-rose"><img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Mamasmooisterood-geel.png?v=1699807720" alt="" onerror="this.style.display='none'"/></div>
+        </div>
+        <h3 class="rcard-name">Mama's Mooiste</h3>
+        <p class="rcard-price">€19,95</p>
+      </a>
+      <a class="rcard" href="product.html">
+        <div class="rcard-photo">
+          <div class="rcard-img bg-butter"><img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/100stoeroranje-geel.png?v=1699807721" alt="" onerror="this.style.display='none'"/></div>
+        </div>
+        <h3 class="rcard-name">100% Stoer · Oranje</h3>
+        <p class="rcard-price">€21,95</p>
+      </a>
+      <a class="rcard" href="product.html">
+        <div class="rcard-photo">
+          <div class="rcard-img bg-peach"><img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefroos-paars.png?v=1699807720" alt="" onerror="this.style.display='none'"/></div>
+        </div>
+        <h3 class="rcard-name">100% Lief · Roze</h3>
+        <p class="rcard-price">€19,95</p>
+      </a>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  <div class="ft-grid">
+    <div>
+      <div class="ft-logo">Lilybet</div>
+      <span class="ft-tag">by Liesbeth</span>
+      <p class="ft-desc">Handgemaakte kinderkledij uit een klein atelier in Geraardsbergen, België.</p>
+      <div class="ft-soc">
+        <a href="#" aria-label="Facebook"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+        <a href="#" aria-label="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+      </div>
+    </div>
+    <div class="ft-col"><h4>Winkel</h4><ul><li><a href="collection.html">Alle producten</a></li><li><a href="#">100% Lief</a></li><li><a href="#">100% Stoer</a></li><li><a href="#">Mama &amp; Papa</a></li></ul></div>
+    <div class="ft-col"><h4>Info</h4><ul><li><a href="#">Over Lilybet</a></li><li><a href="#">Verzending</a></li><li><a href="#">FAQ</a></li></ul></div>
+    <div class="ft-col"><h4>Atelier</h4><ul><li><a href="#">Adamstraat 8</a></li><li><a href="#">9500 Geraardsbergen</a></li></ul></div>
+  </div>
+  <div class="ft-bot">
+    <p>© 2025 Lilybet by Liesbeth</p>
+    <div class="ft-pays"><span class="ft-pay">VISA</span><span class="ft-pay">MC</span><span class="ft-pay">Bancontact</span></div>
+  </div>
+</footer>
+
+<script>
+window.addEventListener('scroll', () => {
+  document.getElementById('hdr').classList.toggle('shrunk', window.scrollY > 20);
+}, { passive: true });
+
+function adj(btn, d) {
+  const item = btn.closest('.item');
+  const span = item.querySelector('.item-qty span');
+  let q = parseInt(span.textContent, 10) + d;
+  if (q < 1) {
+    if (confirm('Verwijder dit item?')) item.remove();
+    else return;
+  } else {
+    span.textContent = q;
+    item.dataset.qty = q;
+  }
+  updateTotals();
+}
+
+function updateTotals() {
+  let sub = 0, count = 0;
+  document.querySelectorAll('.item').forEach(item => {
+    const p = parseFloat(item.dataset.price);
+    const q = parseInt(item.dataset.qty, 10);
+    item.querySelector('.item-price').textContent = '€' + (p * q).toFixed(2).replace('.', ',');
+    sub += p * q;
+    count += q;
+  });
+  const personal = 5;
+  const tot = sub + personal;
+  document.getElementById('sub-val').textContent = '€' + sub.toFixed(2).replace('.', ',');
+  document.getElementById('tot-val').textContent = '€' + tot.toFixed(2).replace('.', ',');
+  document.getElementById('cart-count').textContent = count;
+
+  if (document.querySelectorAll('.item').length === 0) {
+    document.getElementById('items').innerHTML = `
+      <div class="empty">
+        <p style="font-family:'Caveat',cursive;font-size:24px;color:var(--accent);margin-bottom:8px">je winkelmand is leeg</p>
+        <p style="color:var(--mid);margin-bottom:24px;font-size:14px">Nog niets toegevoegd? Bekijk de collectie en vind iets moois.</p>
+        <a href="collection.html" class="btn btn-fill">Naar de winkel</a>
+      </div>
+    `;
+  }
+}
+updateTotals();
+</script>
+
+</body>
+</html>

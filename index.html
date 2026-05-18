@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lilybet by Liesbeth — Handgemaakt in Geraardsbergen</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <style>
+    /* ─── TOKENS ─────────────────────────── */
+    :root {
+      --cream:    #f6f3ec;
+      --cream2:   #fbf7ee;
+      --beige:    #e8dccb;
+      --peach:    #f5d8b8;
+      --rose:     #ecc8c3;
+      --sage:     #c8d4be;
+      --sky:      #c8d6e2;
+      --butter:   #f0e3b0;
+      --lavender: #dccfe0;
+      --accent:   #811169;
+      --accent2:  #a8377f;
+      --cta:      #aed768;
+      --cta-dk:   #3a5c0e;
+      --dark:     #2a1f1f;
+      --mid:      #7a6e60;
+      --light:    #c4bdb4;
+    }
+
+    /* ─── RESET ──────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; }
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--cream);
+      color: var(--dark);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { display: block; max-width: 100%; }
+    button { font-family: inherit; cursor: pointer; }
+
+    /* ─── ANNOUNCEMENT ───────────────────── */
+    .ann {
+      background: var(--cream2);
+      border-bottom: 1px solid rgba(42,31,31,.06);
+      padding: 10px 0;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--mid);
+      letter-spacing: .3px;
+    }
+    .ann em {
+      font-family: 'Caveat', cursive;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 15px;
+      color: var(--accent);
+      margin: 0 3px;
+    }
+
+    /* ─── HEADER (centered masthead) ─────── */
+    .hdr {
+      background: var(--cream);
+      padding: 22px 56px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 32px;
+      border-bottom: 1px solid rgba(42,31,31,.07);
+      position: sticky; top: 0; z-index: 200;
+      transition: padding .25s, box-shadow .25s;
+    }
+    .hdr.shrunk { padding: 14px 56px; box-shadow: 0 2px 24px rgba(42,31,31,.04); }
+
+    .nav-l, .nav-r {
+      display: flex;
+      gap: 28px;
+    }
+    .nav-r { justify-content: flex-end; }
+    .nav-l a, .nav-r a {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--dark);
+      transition: color .2s;
+    }
+    .nav-l a:hover, .nav-r a:hover { color: var(--accent); }
+
+    .masthead {
+      text-align: center;
+      line-height: 1;
+    }
+    .masthead-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 30px;
+      font-weight: 400;
+      color: var(--dark);
+      letter-spacing: -.3px;
+    }
+    .masthead-tag {
+      display: block;
+      font-family: 'Caveat', cursive;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--accent);
+      margin-top: 2px;
+      transform: rotate(-1.5deg);
+      transform-origin: left;
+    }
+
+    .icons-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-left: 16px;
+    }
+    .icn {
+      width: 34px; height: 34px;
+      background: none; border: none;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--dark);
+      border-radius: 50%;
+      transition: background .2s;
+      cursor: pointer;
+    }
+    .icn:hover { background: var(--cream2); }
+    .cart-count {
+      position: absolute;
+      top: -3px; right: -3px;
+      min-width: 17px; height: 17px;
+      background: var(--accent); color: white;
+      font-size: 9.5px; font-weight: 700;
+      border-radius: 9px; padding: 0 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Manrope', sans-serif;
+    }
+    .cart-count.pop { animation: pop .35s ease; }
+    @keyframes pop { 0%,100% { transform:scale(1) } 50% { transform: scale(1.35) } }
+
+    /* ─── HERO ─────────────────────────── */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100svh - 130px);
+      background: var(--cream);
+    }
+    .hero-img {
+      position: relative;
+      overflow: hidden;
+      background: var(--beige);
+    }
+    .hero-img > img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+    }
+    .hero-img-fallback {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--peach) 0%, var(--rose) 100%);
+    }
+
+    .hero-content {
+      padding: 80px 64px;
+      display: flex; flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 12px;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--mid);
+      margin-bottom: 32px;
+    }
+    .hero-eyebrow::before, .hero-eyebrow::after {
+      content: ''; height: 1px; flex: 1; max-width: 28px;
+      background: var(--light);
+    }
+    .hero-eyebrow::after { display: none; }
+
+    .hero-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(48px, 5.5vw, 84px);
+      font-weight: 400;
+      line-height: 1.04;
+      letter-spacing: -2px;
+      color: var(--dark);
+      margin-bottom: 28px;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-title .underlined {
+      position: relative;
+      display: inline-block;
+    }
+    .hero-title .underlined::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: -2px;
+      height: 8px;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,5 Q50,0 100,5 T200,5' fill='none' stroke='%23aed768' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      color: var(--mid);
+      line-height: 1.75;
+      max-width: 440px;
+      margin-bottom: 36px;
+    }
+
+    .hero-cta-row {
+      display: flex; gap: 14px; align-items: center;
+    }
+    .btn {
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: .5px;
+      padding: 14px 28px;
+      border-radius: 999px;
+      border: 1.5px solid transparent;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: all .22s ease;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-fill {
+      background: var(--dark); color: white;
+    }
+    .btn-fill:hover { background: var(--accent); transform: translateY(-1px); }
+    .btn-ghost {
+      background: transparent; color: var(--dark);
+      border-color: var(--dark);
+    }
+    .btn-ghost:hover { background: var(--dark); color: white; }
+
+    /* Floating polaroid in hero */
+    .polaroid {
+      position: absolute;
+      background: white;
+      padding: 10px 10px 16px;
+      box-shadow: 0 12px 36px rgba(42,31,31,.13);
+      transition: transform .4s ease;
+    }
+    .polaroid-photo {
+      width: 100%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--cream2);
+    }
+    .polaroid-photo img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .polaroid-caption {
+      font-family: 'Caveat', cursive;
+      font-size: 16px;
+      color: var(--accent);
+      text-align: center;
+      margin-top: 4px;
+    }
+    .polaroid-1 {
+      bottom: -32px; right: 80px;
+      width: 188px;
+      transform: rotate(4deg);
+      z-index: 10;
+    }
+
+    /* ─── PULL QUOTE BAR ──────────────────── */
+    .quote-bar {
+      background: var(--beige);
+      padding: 88px 64px;
+      text-align: center;
+    }
+    .quote-mark {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: 72px;
+      color: var(--accent);
+      line-height: .5;
+      display: block;
+      margin-bottom: 16px;
+    }
+    .quote-text {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: clamp(28px, 3.5vw, 44px);
+      line-height: 1.3;
+      letter-spacing: -.5px;
+      color: var(--dark);
+      max-width: 880px;
+      margin: 0 auto 22px;
+    }
+    .quote-author {
+      font-family: 'Caveat', cursive;
+      font-size: 26px;
+      color: var(--accent);
+      letter-spacing: -.5px;
+    }
+
+    /* ─── SECTION TITLES ───────────────────── */
+    .sec {
+      padding: 96px 72px;
+      background: var(--cream);
+    }
+    .sec-head {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .sec-eyebrow {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .sec-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(34px, 4vw, 56px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -1px;
+      color: var(--dark);
+    }
+    .sec-title em { font-style: italic; color: var(--accent); }
+    .sec-sub {
+      font-size: 15px;
+      color: var(--mid);
+      max-width: 480px;
+      margin: 12px auto 0;
+      line-height: 1.7;
+    }
+
+    /* ─── PRODUCTS (soft pastel polaroid grid) ── */
+    .pgrid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .pcard {
+      display: flex; flex-direction: column;
+      cursor: pointer;
+      transition: transform .35s ease;
+    }
+    .pcard:hover { transform: translateY(-6px); }
+    .pcard:hover .pcard-photo { box-shadow: 0 18px 40px rgba(42,31,31,.16); }
+    .pcard:hover .pcard-photo .pcard-img-bg img { transform: scale(1.05); }
+
+    .pcard-photo {
+      background: white;
+      padding: 14px 14px 22px;
+      box-shadow: 0 8px 24px rgba(42,31,31,.07);
+      transition: box-shadow .35s ease;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .pcard-img-bg {
+      aspect-ratio: 1;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .pcard-img-bg img {
+      width: 88%;
+      height: 88%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      transition: transform .55s ease;
+    }
+    .pcard-tag {
+      position: absolute;
+      top: 26px; left: 26px;
+      font-family: 'Caveat', cursive;
+      font-size: 17px;
+      color: var(--accent);
+      transform: rotate(-6deg);
+      transform-origin: left;
+      z-index: 2;
+    }
+    .pcard-info {
+      padding: 0 6px;
+    }
+    .pcard-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -.4px;
+      color: var(--dark);
+      margin-bottom: 3px;
+    }
+    .pcard-meta {
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .pcard-vars {
+      font-size: 12.5px;
+      color: var(--mid);
+    }
+    .pcard-price {
+      font-family: 'DM Serif Display', serif;
+      font-size: 19px;
+      color: var(--accent);
+    }
+
+    /* Pastel backgrounds */
+    .bg-peach    .pcard-img-bg { background: var(--peach); }
+    .bg-rose     .pcard-img-bg { background: var(--rose); }
+    .bg-sage     .pcard-img-bg { background: var(--sage); }
+    .bg-sky      .pcard-img-bg { background: var(--sky); }
+    .bg-butter   .pcard-img-bg { background: var(--butter); }
+    .bg-lavender .pcard-img-bg { background: var(--lavender); }
+
+    .pgrid-cta {
+      text-align: center;
+      margin-top: 56px;
+    }
+
+    /* ─── ABOUT (image + text, intimate) ────── */
+    .about {
+      display: grid;
+      grid-template-columns: 0.85fr 1fr;
+      background: var(--cream2);
+      align-items: stretch;
+      min-height: 600px;
+    }
+    .about-img-wrap {
+      position: relative;
+      overflow: hidden;
+      background: var(--beige);
+    }
+    .about-img-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .about-img-fallback {
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, var(--sage), var(--peach));
+    }
+    .about-floater {
+      position: absolute;
+      bottom: 28px; right: -36px;
+      background: white;
+      padding: 8px 8px 14px;
+      box-shadow: 0 10px 32px rgba(42,31,31,.16);
+      transform: rotate(3deg);
+      width: 156px;
+      z-index: 5;
+    }
+    .about-floater-photo {
+      width: 100%;
+      aspect-ratio: 1;
+      background: var(--butter);
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .about-floater-photo img {
+      width: 86%; height: 86%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+    .about-floater-cap {
+      font-family: 'Caveat', cursive;
+      font-size: 15px;
+      color: var(--accent);
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .about-text {
+      padding: 88px 72px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .about-greet {
+      font-family: 'Caveat', cursive;
+      font-size: 28px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .about-text h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(34px, 4vw, 52px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -1px;
+      color: var(--dark);
+      margin-bottom: 24px;
+    }
+    .about-text h2 em { font-style: italic; }
+    .about-text p {
+      font-size: 15.5px;
+      color: var(--mid);
+      line-height: 1.78;
+      margin-bottom: 14px;
+      max-width: 480px;
+    }
+    .about-text p strong { color: var(--dark); font-weight: 600; }
+
+    .about-sign {
+      margin-top: 28px;
+      padding-top: 28px;
+      border-top: 1px solid rgba(42,31,31,.08);
+      display: flex; align-items: center; gap: 16px;
+    }
+    .about-signature {
+      font-family: 'Caveat', cursive;
+      font-size: 38px;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .about-creds {
+      font-size: 12px;
+      color: var(--mid);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .about-creds strong { color: var(--dark); font-weight: 600; }
+
+    /* ─── TESTIMONIALS ────────────────────── */
+    .testi {
+      background: var(--cream);
+      padding: 96px 72px;
+    }
+    .testi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .testi-card {
+      background: var(--cream2);
+      padding: 36px 30px;
+      border-radius: 4px;
+    }
+    .testi-stars {
+      color: var(--accent);
+      font-size: 16px;
+      letter-spacing: 3px;
+      margin-bottom: 18px;
+    }
+    .testi-text {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--dark);
+      margin-bottom: 22px;
+    }
+    .testi-author {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .testi-avatar {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      font-weight: 400;
+      flex-shrink: 0;
+    }
+    .testi-name {
+      font-size: 14px; font-weight: 600;
+      color: var(--dark);
+    }
+    .testi-meta {
+      font-size: 12px; color: var(--mid);
+    }
+
+    /* ─── NEWSLETTER ──────────────────────── */
+    .nl {
+      background: var(--beige);
+      padding: 88px 72px;
+      text-align: center;
+    }
+    .nl-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(30px, 3.5vw, 46px);
+      font-weight: 400;
+      letter-spacing: -.8px;
+      color: var(--dark);
+      margin-bottom: 12px;
+      line-height: 1.1;
+    }
+    .nl-title em { font-style: italic; color: var(--accent); }
+    .nl-tag {
+      font-family: 'Caveat', cursive;
+      font-size: 22px;
+      color: var(--accent);
+      margin-bottom: 10px;
+      display: block;
+    }
+    .nl-sub {
+      font-size: 15px;
+      color: var(--mid);
+      max-width: 500px;
+      margin: 0 auto 32px;
+      line-height: 1.65;
+    }
+    .nl-form {
+      display: flex;
+      max-width: 460px;
+      margin: 0 auto;
+      gap: 8px;
+    }
+    .nl-input {
+      flex: 1;
+      padding: 14px 20px;
+      border: 1.5px solid rgba(42,31,31,.15);
+      background: white;
+      color: var(--dark);
+      font-family: 'Manrope', sans-serif;
+      font-size: 14px;
+      border-radius: 999px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .nl-input:focus { border-color: var(--accent); }
+    .nl-input::placeholder { color: var(--light); }
+    .nl-go {
+      background: var(--dark); color: white;
+      border: none;
+      padding: 14px 26px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13px; font-weight: 600;
+      letter-spacing: .5px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .nl-go:hover { background: var(--accent); }
+
+    /* ─── FOOTER ──────────────────────────── */
+    .footer {
+      background: var(--dark);
+      color: rgba(255,255,255,.7);
+      padding: 72px 72px 36px;
+    }
+    .ft-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+      gap: 56px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      margin-bottom: 28px;
+    }
+    .ft-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 30px;
+      color: white;
+      letter-spacing: -.4px;
+      margin-bottom: 4px;
+    }
+    .ft-tag {
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      color: var(--cta);
+      transform: rotate(-2deg);
+      transform-origin: left;
+      display: inline-block;
+      margin-bottom: 18px;
+    }
+    .ft-desc {
+      font-size: 13.5px;
+      color: rgba(255,255,255,.45);
+      line-height: 1.75;
+      margin-bottom: 22px;
+      max-width: 320px;
+    }
+    .ft-soc { display: flex; gap: 10px; }
+    .ft-soc a {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.6);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, color .2s;
+    }
+    .ft-soc a:hover { background: var(--cta); color: var(--cta-dk); }
+
+    .ft-col h4 {
+      font-size: 10.5px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,.3);
+      margin-bottom: 18px;
+    }
+    .ft-col ul { list-style: none; }
+    .ft-col li { margin-bottom: 9px; }
+    .ft-col a {
+      font-size: 13.5px;
+      color: rgba(255,255,255,.5);
+      transition: color .2s;
+    }
+    .ft-col a:hover { color: var(--cta); }
+
+    .ft-bot {
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .ft-bot p { font-size: 11.5px; color: rgba(255,255,255,.25); }
+    .ft-pays { display: flex; gap: 6px; }
+    .ft-pay {
+      background: rgba(255,255,255,.06);
+      color: rgba(255,255,255,.35);
+      font-size: 9.5px; font-weight: 700;
+      padding: 4px 8px; border-radius: 2px;
+      letter-spacing: .5px;
+    }
+
+    #tweaks-root { position: fixed; z-index: 9000; bottom: 24px; right: 24px; }
+  </style>
+</head>
+<body>
+
+<!-- Announcement -->
+<div class="ann">
+  Gratis verzending vanaf €50 · Handgemaakt <em>met liefde</em> in Geraardsbergen
+</div>
+
+<!-- Header — centered masthead -->
+<header class="hdr" id="hdr">
+  <nav class="nav-l">
+    <a href="collection.html">Winkel</a>
+    <a href="collection.html">Collecties</a>
+    <a href="#">Personaliseer</a>
+  </nav>
+  <div class="masthead">
+    <a href="index.html">
+      <div class="masthead-name">Lilybet</div>
+      <span class="masthead-tag">by Liesbeth</span>
+    </a>
+  </div>
+  <nav class="nav-r">
+    <a href="#">Atelier</a>
+    <a href="#">Contact</a>
+    <div class="icons-row">
+      <button class="icn" aria-label="Zoeken">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <a href="cart.html" class="icn" style="position:relative" aria-label="Winkelmand">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cart-count">0</span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-img">
+    <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/background_2048x_cropped_751afe4e-0dc6-4bd6-9d90-9fa5915f5b9d.jpg?v=1700215745" alt="Lilybet atelier" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+    <div class="hero-img-fallback" style="display:none"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">Een atelier in Geraardsbergen</div>
+    <h1 class="hero-title">
+      Voor de kleintjes<br>
+      met het <em>grootste</em><br>
+      <span class="underlined">hart.</span>
+    </h1>
+    <p class="hero-sub">Handgemaakte, gepersonaliseerde kinderkledij. Elk stuk uniek — net als jouw kindje. Met aandacht gemaakt door Liesbeth, in haar atelier in België.</p>
+    <div class="hero-cta-row">
+      <a href="collection.html" class="btn btn-fill">
+        Ontdek de collectie
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <a href="#" class="btn btn-ghost">Ons verhaal</a>
+    </div>
+
+    <!-- Floating polaroid -->
+    <div class="polaroid polaroid-1">
+      <div class="polaroid-photo" style="background: var(--peach);">
+        <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefzwart-geel.png?v=1699807716" alt="100% Lief" style="mix-blend-mode:multiply" onerror="this.style.display='none'"/>
+      </div>
+      <p class="polaroid-caption">100% lief ♡</p>
+    </div>
+  </div>
+</section>
+
+<!-- PULL QUOTE -->
+<section class="quote-bar">
+  <span class="quote-mark">"</span>
+  <p class="quote-text">Geen twee stukjes zijn hetzelfde — net zoals geen twee kinderen hetzelfde zijn.</p>
+  <p class="quote-author">— Liesbeth</p>
+</section>
+
+<!-- PRODUCTS -->
+<section class="sec">
+  <div class="sec-head">
+    <div class="sec-eyebrow">Onze collectie</div>
+    <h2 class="sec-title">Handgemaakte <em>favorieten</em></h2>
+    <p class="sec-sub">Elk stuk persoonlijk gemaakt in het atelier. Kies jouw kleuren — wij doen de rest.</p>
+  </div>
+
+  <div class="pgrid">
+    <a href="product.html" class="pcard bg-peach">
+      <div class="pcard-photo">
+        <span class="pcard-tag">bestseller</span>
+        <div class="pcard-img-bg">
+          <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefzwart-geel.png?v=1699807716" alt="100% Lief" onerror="this.style.display='none'"/>
+        </div>
+      </div>
+      <div class="pcard-info">
+        <h3 class="pcard-name">100% Lief</h3>
+        <div class="pcard-meta">
+          <span class="pcard-vars">5 kleurcombinaties</span>
+          <span class="pcard-price">€19,95</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="product.html" class="pcard bg-sky">
+      <div class="pcard-photo">
+        <span class="pcard-tag">stoer &amp; sterk</span>
+        <div class="pcard-img-bg">
+          <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/100stoerrood-blauw2.png?v=1699807717" alt="100% Stoer" onerror="this.style.display='none'"/>
+        </div>
+      </div>
+      <div class="pcard-info">
+        <h3 class="pcard-name">100% Stoer</h3>
+        <div class="pcard-meta">
+          <span class="pcard-vars">4 kleurcombinaties</span>
+          <span class="pcard-price">€19,95</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="product.html" class="pcard bg-lavender">
+      <div class="pcard-photo">
+        <span class="pcard-tag">voor mama</span>
+        <div class="pcard-img-bg">
+          <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Mamasprinsesjewit-paars.png?v=1699807717" alt="Mama's Prinsesje" onerror="this.style.display='none'"/>
+        </div>
+      </div>
+      <div class="pcard-info">
+        <h3 class="pcard-name">Mama's Prinsesje</h3>
+        <div class="pcard-meta">
+          <span class="pcard-vars">3 kleurcombinaties</span>
+          <span class="pcard-price">€19,95</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="product.html" class="pcard bg-sage">
+      <div class="pcard-photo">
+        <span class="pcard-tag">voor papa</span>
+        <div class="pcard-img-bg">
+          <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Papasprinsesjeroos2-blauw1.png?v=1699807721" alt="Papa's Prinsesje" onerror="this.style.display='none'"/>
+        </div>
+      </div>
+      <div class="pcard-info">
+        <h3 class="pcard-name">Papa's Prinsesje</h3>
+        <div class="pcard-meta">
+          <span class="pcard-vars">3 kleurcombinaties</span>
+          <span class="pcard-price">€19,95</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="product.html" class="pcard bg-rose">
+      <div class="pcard-photo">
+        <span class="pcard-tag">mooiste</span>
+        <div class="pcard-img-bg">
+          <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Mamasmooisterood-geel.png?v=1699807720" alt="Mama's Mooiste" onerror="this.style.display='none'"/>
+        </div>
+      </div>
+      <div class="pcard-info">
+        <h3 class="pcard-name">Mama's Mooiste</h3>
+        <div class="pcard-meta">
+          <span class="pcard-vars">4 kleurcombinaties</span>
+          <span class="pcard-price">€19,95</span>
+        </div>
+      </div>
+    </a>
+
+    <a href="product.html" class="pcard bg-butter">
+      <div class="pcard-photo">
+        <span class="pcard-tag">avontuur</span>
+        <div class="pcard-img-bg">
+          <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/100stoeroranje-geel.png?v=1699807721" alt="100% Stoer Oranje" onerror="this.style.display='none'"/>
+        </div>
+      </div>
+      <div class="pcard-info">
+        <h3 class="pcard-name">100% Stoer · Oranje</h3>
+        <div class="pcard-meta">
+          <span class="pcard-vars">limited edition</span>
+          <span class="pcard-price">€21,95</span>
+        </div>
+      </div>
+    </a>
+  </div>
+
+  <div class="pgrid-cta">
+    <a href="collection.html" class="btn btn-ghost">
+      Bekijk alle producten
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about">
+  <div class="about-img-wrap">
+    <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/achtergrond.webp?v=1700057550" alt="Liesbeth in haar atelier" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+    <div class="about-img-fallback" style="display:none"></div>
+
+    <!-- floating product accent -->
+    <div class="about-floater">
+      <div class="about-floater-photo">
+        <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefblauw2-geel.png?v=1699807718" alt="" style="mix-blend-mode:multiply" onerror="this.style.display='none'"/>
+      </div>
+      <p class="about-floater-cap">gemaakt voor jou</p>
+    </div>
+  </div>
+
+  <div class="about-text">
+    <span class="about-greet">Hallo, ik ben —</span>
+    <h2>Liesbeth.</h2>
+    <p>Ik ben naaister, borduurster en moeder. Lilybet begon als een hobby aan mijn keukentafel, en groeide uit tot wat het vandaag is: <strong>een klein atelier in Geraardsbergen</strong>, waar ik elk stuk persoonlijk maak.</p>
+    <p>Geen massaproductie. Geen fabriek aan de andere kant van de wereld. Gewoon ik, mijn naaimachine, en heel veel liefde voor mooi vakmanschap.</p>
+
+    <div class="about-sign">
+      <div class="about-signature">Liesbeth</div>
+      <div class="about-creds">
+        <strong>Liesbeth Vidts</strong><br>
+        Naaister · oprichter · Geraardsbergen
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi">
+  <div class="sec-head">
+    <div class="sec-eyebrow">Wat ouders zeggen</div>
+    <h2 class="sec-title">Met <em>liefde</em> ontvangen</h2>
+  </div>
+
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Echt prachtig handwerk. Mijn dochter draagt haar 'Mama's Prinsesje' truitje met zoveel trots — en de kwaliteit is voelbaar."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">M</div>
+        <div>
+          <div class="testi-name">Marleen V.</div>
+          <div class="testi-meta">Gent · november 2024</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"De persoonlijke aandacht is fantastisch. Liesbeth heeft mijn vraag voor een speciale kleurcombinatie meteen waargemaakt."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">S</div>
+        <div>
+          <div class="testi-name">Sofie D.</div>
+          <div class="testi-meta">Antwerpen · oktober 2024</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Gekocht als doopcadeau, gigantisch succes. Voelt zo veel persoonlijker dan iets uit een winkel. Ga zeker terug bestellen."</p>
+      <div class="testi-author">
+        <div class="testi-avatar">J</div>
+        <div>
+          <div class="testi-name">Jolien M.</div>
+          <div class="testi-meta">Brussel · januari 2025</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="nl">
+  <span class="nl-tag">blijf op de hoogte</span>
+  <h2 class="nl-title">Schrijf je in voor <em>onze nieuwsbrief</em></h2>
+  <p class="nl-sub">Nieuwe collecties, exclusieve aanbiedingen en kleine verhalen uit het atelier — rechtstreeks in je mailbox.</p>
+  <form class="nl-form" onsubmit="return false">
+    <input class="nl-input" type="email" placeholder="jouw e-mailadres"/>
+    <button class="nl-go">Inschrijven →</button>
+  </form>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="ft-grid">
+    <div>
+      <div class="ft-logo">Lilybet</div>
+      <span class="ft-tag">by Liesbeth</span>
+      <p class="ft-desc">Handgemaakte kinderkledij uit een klein atelier in Geraardsbergen, België. Elk stuk gemaakt met liefde en aandacht.</p>
+      <div class="ft-soc">
+        <a href="https://www.facebook.com/people/ByLiesbeth/100091059132434/" aria-label="Facebook">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/lilybet_byliesbeth" aria-label="Instagram">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="ft-col">
+      <h4>Winkel</h4>
+      <ul>
+        <li><a href="#">100% Lief</a></li>
+        <li><a href="#">100% Stoer</a></li>
+        <li><a href="#">Mama's Prinsesje</a></li>
+        <li><a href="#">Papa's Prinsesje</a></li>
+        <li><a href="#">Mama's Mooiste</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>Info</h4>
+      <ul>
+        <li><a href="#">Over Lilybet</a></li>
+        <li><a href="#">Personaliseren</a></li>
+        <li><a href="#">Verzending</a></li>
+        <li><a href="#">Retour</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="ft-col">
+      <h4>Atelier</h4>
+      <ul>
+        <li><a href="#">Adamstraat 8</a></li>
+        <li><a href="#">9500 Geraardsbergen</a></li>
+        <li><a href="tel:0494773070">0494 77 30 70</a></li>
+        <li><a href="#">info@lilybet.be</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="ft-bot">
+    <p>© 2025 Lilybet by Liesbeth — Met liefde gemaakt in België</p>
+    <div class="ft-pays">
+      <span class="ft-pay">VISA</span>
+      <span class="ft-pay">MC</span>
+      <span class="ft-pay">Bancontact</span>
+      <span class="ft-pay">PayPal</span>
+    </div>
+  </div>
+</footer>
+
+<div id="tweaks-root"></div>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+
+<script>
+// Sticky header shrink
+window.addEventListener('scroll', () => {
+  document.getElementById('hdr').classList.toggle('shrunk', window.scrollY > 20);
+}, { passive: true });
+
+// Cart bump animation (placeholder)
+let cartN = 0;
+document.querySelectorAll('.pcard').forEach(card => {
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('a,button')) return;
+    cartN++;
+    const el = document.getElementById('cart-count');
+    el.textContent = cartN;
+    el.classList.remove('pop');
+    void el.offsetWidth;
+    el.classList.add('pop');
+  });
+});
+</script>
+
+<script type="text/babel">
+const TWEAK_DEFAULS = /*EDITMODE-BEGIN*/{
+  "accent": "#811169",
+  "cta": "#aed768",
+  "scheme": "warm"
+}/*EDITMODE-END*/;
+
+const SCHEMES = {
+  warm:    { peach:'#f5d8b8', rose:'#ecc8c3', sage:'#c8d4be', sky:'#c8d6e2', butter:'#f0e3b0', lavender:'#dccfe0', beige:'#e8dccb', cream:'#f6f3ec' },
+  pastel:  { peach:'#fcd5ce', rose:'#e8c1dd', sage:'#cde0d4', sky:'#c8dcf0', butter:'#fde8a8', lavender:'#dcc8f0', beige:'#f0e6d8', cream:'#fbf7f0' },
+  muted:   { peach:'#d4b89c', rose:'#c8a8a3', sage:'#b0bca5', sky:'#a8b8c5', butter:'#d4c590', lavender:'#bcb0c5', beige:'#d8ccba', cream:'#f0ece2' },
+  vivid:   { peach:'#ffb47a', rose:'#f088a8', sage:'#a8d090', sky:'#90c0e0', butter:'#f8d050', lavender:'#c098e0', beige:'#e8dccb', cream:'#f6f3ec' },
+};
+
+function Tweaks() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULS);
+  React.useEffect(() => {
+    const r = document.documentElement;
+    r.style.setProperty('--accent', t.accent);
+    r.style.setProperty('--cta', t.cta);
+    const s = SCHEMES[t.scheme] || SCHEMES.warm;
+    Object.entries(s).forEach(([k, v]) => r.style.setProperty('--' + k, v));
+  }, [t]);
+
+  return (
+    <TweaksPanel title="Lilybet Stijl">
+      <TweakSection label="Kleuren">
+        <TweakColor label="Accent" value={t.accent}
+          options={['#811169','#b5302a','#1a5c9a','#2c6e49','#c47030']}
+          onChange={v => setTweak('accent', v)} />
+        <TweakColor label="CTA-knop" value={t.cta}
+          options={['#aed768','#f0c840','#ff8c42','#7ecbd4']}
+          onChange={v => setTweak('cta', v)} />
+      </TweakSection>
+      <TweakSection label="Pastel palet">
+        <TweakRadio label="Palet" value={t.scheme}
+          options={['warm','pastel','muted','vivid']}
+          onChange={v => setTweak('scheme', v)} />
+      </TweakSection>
+    </TweaksPanel>
+  );
+}
+ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<Tweaks />);
+</script>
+
+</body>
+</html>

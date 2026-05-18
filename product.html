@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>100% Lief — Lilybet by Liesbeth</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Manrope:wght@300;400;500;600;700&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="brand.css" />
+
+  <style>
+    /* ─── PRODUCT PAGE ─── */
+    .pdp {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      gap: 64px;
+      padding: 48px 72px 96px;
+      background: var(--cream);
+    }
+
+    /* Gallery */
+    .gallery {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      gap: 18px;
+      align-self: start;
+      position: sticky; top: 110px;
+    }
+    .gallery-thumbs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .thumb {
+      aspect-ratio: 1;
+      background: var(--peach);
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color .2s;
+      display: flex; align-items: center; justify-content: center;
+      padding: 8px;
+    }
+    .thumb img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+    .thumb.active { border-color: var(--dark); }
+    .thumb:hover { border-color: var(--accent2); }
+
+    .gallery-main {
+      background: var(--peach);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      padding: 32px;
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .35s ease;
+    }
+    .gallery-main img {
+      width: 100%; height: 100%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      transition: opacity .25s ease;
+    }
+    .gallery-tag {
+      position: absolute;
+      top: 24px; left: 28px;
+      font-family: 'Caveat', cursive;
+      font-size: 22px;
+      color: var(--accent);
+      transform: rotate(-5deg);
+      transform-origin: left;
+    }
+    .gallery-zoom {
+      position: absolute;
+      bottom: 16px; right: 16px;
+      width: 38px; height: 38px;
+      background: rgba(255,255,255,.7);
+      border: none;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--dark);
+      backdrop-filter: blur(4px);
+      transition: background .2s;
+    }
+    .gallery-zoom:hover { background: white; }
+
+    /* Info column */
+    .pinfo { padding-top: 20px; max-width: 480px; }
+    .p-cat {
+      font-family: 'Caveat', cursive;
+      font-size: 20px;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .p-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(38px, 4vw, 56px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -1px;
+      color: var(--dark);
+      margin-bottom: 14px;
+    }
+    .p-name em { font-style: italic; color: var(--accent); }
+    .p-stars {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 22px;
+    }
+    .p-stars .stars { color: var(--accent); letter-spacing: 2px; font-size: 14px; }
+    .p-stars .count { font-size: 13px; color: var(--mid); }
+    .p-stars .count a { color: var(--mid); text-decoration: underline; text-underline-offset: 3px; }
+
+    .p-price-row {
+      display: flex; align-items: baseline; gap: 14px;
+      margin-bottom: 28px;
+    }
+    .p-price {
+      font-family: 'DM Serif Display', serif;
+      font-size: 32px;
+      color: var(--accent);
+      letter-spacing: -.5px;
+    }
+    .p-price-old {
+      font-size: 16px;
+      color: var(--light);
+      text-decoration: line-through;
+    }
+    .p-vat { font-size: 12px; color: var(--mid); }
+
+    .p-desc {
+      font-size: 15px;
+      color: var(--mid);
+      line-height: 1.75;
+      margin-bottom: 32px;
+    }
+
+    /* Variant picker */
+    .picker {
+      padding: 24px 0;
+      border-top: 1px solid var(--line);
+    }
+    .picker-head {
+      display: flex; justify-content: space-between; align-items: baseline;
+      margin-bottom: 14px;
+    }
+    .picker-label {
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--dark);
+    }
+    .picker-value {
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      color: var(--accent);
+    }
+    .swatch-row {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .swatch {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2.5px solid transparent;
+      transition: all .15s;
+      position: relative;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.1);
+    }
+    .swatch:hover { transform: scale(1.12); }
+    .swatch.on { border-color: var(--dark); }
+    .swatch.duo {
+      background: linear-gradient(135deg, var(--c1) 50%, var(--c2) 50%);
+    }
+
+    /* Personalization */
+    .pers {
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+    }
+    .pers-input {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid var(--line-dk);
+      background: white;
+      color: var(--dark);
+      font-family: 'Caveat', cursive;
+      font-size: 20px;
+      border-radius: 10px;
+      outline: none;
+      transition: border-color .2s;
+    }
+    .pers-input:focus { border-color: var(--accent); }
+    .pers-hint {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--mid);
+      margin-top: 8px;
+    }
+    .pers-hint svg { color: var(--accent); flex-shrink: 0; }
+
+    /* Quantity + cart */
+    .add-row {
+      display: flex; align-items: stretch; gap: 10px;
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+    }
+    .qty {
+      display: flex; align-items: center;
+      border: 1.5px solid var(--line-dk);
+      border-radius: 999px;
+      padding: 4px;
+    }
+    .qty button {
+      width: 32px; height: 32px;
+      background: none; border: none;
+      border-radius: 50%;
+      font-size: 16px;
+      color: var(--dark);
+      transition: background .2s;
+    }
+    .qty button:hover { background: var(--cream2); }
+    .qty span {
+      min-width: 28px;
+      text-align: center;
+      font-size: 14px; font-weight: 600;
+    }
+    .add-btn {
+      flex: 1;
+      background: var(--dark); color: white;
+      border: none;
+      padding: 0 28px;
+      font-family: 'Manrope', sans-serif;
+      font-size: 13.5px; font-weight: 700;
+      letter-spacing: .5px;
+      border-radius: 999px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: background .22s;
+    }
+    .add-btn:hover { background: var(--accent); }
+    .fav-btn {
+      width: 50px; height: 50px;
+      background: none;
+      border: 1.5px solid var(--line-dk);
+      border-radius: 50%;
+      color: var(--dark);
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .fav-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .fav-btn.on { background: var(--accent); border-color: var(--accent); color: white; }
+
+    /* Trust strip */
+    .trust {
+      display: flex; gap: 20px;
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+    }
+    .trust-item {
+      flex: 1;
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 12px;
+      color: var(--mid);
+      line-height: 1.45;
+    }
+    .trust-item svg { color: var(--cta-dk); flex-shrink: 0; margin-top: 2px; }
+    .trust-item strong { display: block; color: var(--dark); font-weight: 600; margin-bottom: 2px; }
+
+    /* Accordion */
+    .acc {
+      padding: 22px 0;
+      border-top: 1px solid var(--line);
+    }
+    .acc:last-of-type { border-bottom: 1px solid var(--line); }
+    .acc-head {
+      width: 100%;
+      background: none; border: none;
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 19px;
+      color: var(--dark);
+      padding: 0;
+    }
+    .acc-head svg {
+      transition: transform .25s;
+      color: var(--mid);
+    }
+    .acc.open .acc-head svg { transform: rotate(180deg); }
+    .acc-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .35s ease;
+    }
+    .acc.open .acc-body { max-height: 400px; }
+    .acc-content {
+      padding: 14px 0 4px;
+      font-size: 14px;
+      color: var(--mid);
+      line-height: 1.7;
+    }
+    .acc-content ul { margin-left: 18px; }
+    .acc-content li { margin-bottom: 6px; }
+
+    /* Made-by-Liesbeth strip */
+    .liesbeth-bar {
+      background: var(--beige);
+      padding: 28px 72px;
+      display: flex; align-items: center; gap: 24px;
+    }
+    .lb-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .lb-text { flex: 1; }
+    .lb-text strong {
+      font-family: 'Caveat', cursive;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--accent);
+      display: block;
+    }
+    .lb-text p {
+      font-size: 13.5px;
+      color: var(--mid);
+      line-height: 1.6;
+      margin-top: 2px;
+    }
+    .lb-link {
+      font-size: 12px; font-weight: 600;
+      color: var(--dark);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Related products */
+    .related {
+      background: var(--cream);
+      padding: 88px 72px;
+    }
+    .related-head {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 40px;
+    }
+    .rel-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+    .rcard { cursor: pointer; transition: transform .3s; }
+    .rcard:hover { transform: translateY(-4px); }
+    .rcard-photo {
+      background: white;
+      padding: 12px 12px 18px;
+      box-shadow: 0 6px 20px rgba(42,31,31,.06);
+      margin-bottom: 12px;
+    }
+    .rcard-img {
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .rcard-img img {
+      width: 86%; height: 86%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+    .rcard-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 17px;
+      color: var(--dark);
+      margin-bottom: 2px;
+    }
+    .rcard-price {
+      font-size: 14px;
+      color: var(--accent);
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body data-screen-label="Product detail · 100% Lief">
+
+<!-- Announcement -->
+<div class="ann">
+  Gratis verzending vanaf €50 · Handgemaakt <em>met liefde</em> in Geraardsbergen
+</div>
+
+<!-- Header -->
+<header class="hdr" id="hdr">
+  <nav class="nav-l">
+    <a href="collection.html">Winkel</a>
+    <a href="#">Collecties</a>
+    <a href="#">Personaliseer</a>
+  </nav>
+  <div class="masthead">
+    <a href="index.html">
+      <div class="masthead-name">Lilybet</div>
+      <span class="masthead-tag">by Liesbeth</span>
+    </a>
+  </div>
+  <nav class="nav-r">
+    <a href="#">Atelier</a>
+    <a href="#">Contact</a>
+    <div class="icons-row">
+      <button class="icn" aria-label="Zoeken">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <a href="cart.html" class="icn" aria-label="Winkelmand">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" id="cart-count">2</span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<!-- Breadcrumb -->
+<div class="crumb">
+  <a href="index.html">Home</a><span class="crumb-sep">›</span>
+  <a href="collection.html">Winkel</a><span class="crumb-sep">›</span>
+  <a href="collection.html">100% collectie</a><span class="crumb-sep">›</span>
+  <span class="current">100% Lief</span>
+</div>
+
+<!-- PRODUCT -->
+<section class="pdp">
+
+  <!-- Gallery -->
+  <div class="gallery">
+    <div class="gallery-thumbs" id="thumbs">
+      <div class="thumb active" style="background:var(--peach)" data-img="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefzwart-geel.png?v=1699807716" data-bg="var(--peach)">
+        <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefzwart-geel.png?v=1699807716" alt="" onerror="this.style.display='none'"/>
+      </div>
+      <div class="thumb" style="background:var(--sky)" data-img="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefblauw2-geel.png?v=1699807718" data-bg="var(--sky)">
+        <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefblauw2-geel.png?v=1699807718" alt="" onerror="this.style.display='none'"/>
+      </div>
+      <div class="thumb" style="background:var(--lavender)" data-img="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefroos-paars.png?v=1699807720" data-bg="var(--lavender)">
+        <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefroos-paars.png?v=1699807720" alt="" onerror="this.style.display='none'"/>
+      </div>
+      <div class="thumb" style="background:var(--sage)" data-img="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefblauw3-blauw1.png?v=1699807721" data-bg="var(--sage)">
+        <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefblauw3-blauw1.png?v=1699807721" alt="" onerror="this.style.display='none'"/>
+      </div>
+      <div class="thumb" style="background:var(--butter)" data-img="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefblauw2-blauw2.png?v=1699807719" data-bg="var(--butter)">
+        <img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefblauw2-blauw2.png?v=1699807719" alt="" onerror="this.style.display='none'"/>
+      </div>
+    </div>
+
+    <div class="gallery-main" id="main-photo">
+      <span class="gallery-tag">100% lief ♡</span>
+      <img id="main-img" src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefzwart-geel.png?v=1699807716" alt="100% Lief in zwart en geel" onerror="this.style.display='none'"/>
+      <button class="gallery-zoom" aria-label="Vergroten">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="pinfo">
+    <span class="p-cat">voor de kleinste</span>
+    <h1 class="p-name">100% <em>Lief.</em></h1>
+
+    <div class="p-stars">
+      <span class="stars">★★★★★</span>
+      <span class="count"><a href="#">47 beoordelingen</a></span>
+    </div>
+
+    <div class="p-price-row">
+      <span class="p-price">€19,95</span>
+      <span class="p-price-old">€24,95</span>
+      <span class="p-vat">incl. BTW · gratis verzending vanaf €50</span>
+    </div>
+
+    <p class="p-desc">Een handgemaakte borduring voor je kleinste schat. Strijk eenvoudig op een truitje, romper of doek — en maak van elk stukje stof iets uniek persoonlijks.</p>
+
+    <!-- Color -->
+    <div class="picker">
+      <div class="picker-head">
+        <span class="picker-label">Kleurcombinatie</span>
+        <span class="picker-value" id="color-value">Zwart &amp; Geel</span>
+      </div>
+      <div class="swatch-row" id="swatches">
+        <div class="swatch on duo" style="--c1:#1a1a1a; --c2:#f5d020" data-name="Zwart & Geel" data-img="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefzwart-geel.png?v=1699807716" data-bg="var(--peach)"></div>
+        <div class="swatch duo" style="--c1:#1a6bb5; --c2:#f5d020" data-name="Blauw & Geel" data-img="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefblauw2-geel.png?v=1699807718" data-bg="var(--sky)"></div>
+        <div class="swatch duo" style="--c1:#e08fc8; --c2:#7d3c98" data-name="Roze &amp; Paars" data-img="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefroos-paars.png?v=1699807720" data-bg="var(--lavender)"></div>
+        <div class="swatch duo" style="--c1:#1a6bb5; --c2:#a8c8e8" data-name="Diep blauw & Lichtblauw" data-img="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefblauw3-blauw1.png?v=1699807721" data-bg="var(--sage)"></div>
+        <div class="swatch duo" style="--c1:#a8c8e8; --c2:#1a6bb5" data-name="Lichtblauw &amp; Blauw" data-img="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/10025liefblauw2-blauw2.png?v=1699807719" data-bg="var(--butter)"></div>
+      </div>
+    </div>
+
+    <!-- Personalization -->
+    <div class="pers">
+      <div class="picker-head">
+        <span class="picker-label">Personaliseer met een naam</span>
+        <span class="picker-value">optioneel ★</span>
+      </div>
+      <input class="pers-input" type="text" placeholder="bv. Emma, Liam, Noor..." maxlength="14"/>
+      <p class="pers-hint">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        Liesbeth borduurt de naam erbij. +€5,00 supplement. Max. 14 letters.
+      </p>
+    </div>
+
+    <!-- Add to cart -->
+    <div class="add-row">
+      <div class="qty">
+        <button onclick="qty(-1)" aria-label="Min">−</button>
+        <span id="qty">1</span>
+        <button onclick="qty(1)" aria-label="Plus">+</button>
+      </div>
+      <button class="add-btn" onclick="addToCart()">
+        Toevoegen aan winkelmand
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+      </button>
+      <button class="fav-btn" id="fav-btn" onclick="this.classList.toggle('on')" aria-label="Bewaren">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+      </button>
+    </div>
+
+    <!-- Trust -->
+    <div class="trust">
+      <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+        <span><strong>Handgemaakt</strong>door Liesbeth, in 3-5 werkdagen</span>
+      </div>
+      <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg>
+        <span><strong>Snel geleverd</strong>1-2 dagen in BE/NL</span>
+      </div>
+      <div class="trust-item">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span><strong>30 dagen retour</strong>ook bij personalisatie</span>
+      </div>
+    </div>
+
+    <!-- Accordions -->
+    <details class="acc" open>
+      <summary class="acc-head" style="list-style:none;cursor:pointer">
+        <span>Beschrijving</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="acc-content">
+        <p>De "100% Lief" borduring is met zorg ontworpen door Liesbeth in haar atelier in Geraardsbergen. Een tijdloze tekst die past op rompertjes, babydekens, doopkleedjes of jouw favoriete trui — een aandenken voor het leven.</p>
+        <ul style="margin-top:10px">
+          <li>100% katoen borduurdraad, OEKO-TEX gecertificeerd</li>
+          <li>Strijkbaar (laag-medium, geen stoom direct op de borduring)</li>
+          <li>Wasbaar tot 40°C, binnenstebuiten</li>
+          <li>Afmeting: ca. 10 × 6 cm</li>
+        </ul>
+      </div>
+    </details>
+    <details class="acc">
+      <summary class="acc-head" style="list-style:none;cursor:pointer">
+        <span>Materialen &amp; verzorging</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="acc-content">
+        <p>Geborduurd met hoogwaardige Madeira katoenen draad. Backing in extra-zachte tricot. Geschikt vanaf de geboorte — geen risico op irritatie van de huid.</p>
+      </div>
+    </details>
+    <details class="acc">
+      <summary class="acc-head" style="list-style:none;cursor:pointer">
+        <span>Verzending &amp; retour</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </summary>
+      <div class="acc-content">
+        <p>Verzending binnen 3-5 werkdagen na bestelling. Gratis verzending vanaf €50 in BE/NL. Retour mogelijk binnen 30 dagen — ook voor gepersonaliseerde items (uitzonderlijk!).</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- Made-by-Liesbeth strip -->
+<section class="liesbeth-bar">
+  <div class="lb-avatar">L</div>
+  <div class="lb-text">
+    <strong>Persoonlijk gemaakt door Liesbeth</strong>
+    <p>Elk stukje wordt door mij persoonlijk gemaakt in mijn atelier in Geraardsbergen. Geen massaproductie. Vragen of speciaal verzoek? Stuur me gerust een berichtje.</p>
+  </div>
+  <a href="#" class="lb-link">Stuur Liesbeth een bericht →</a>
+</section>
+
+<!-- Related -->
+<section class="related">
+  <div class="related-head">
+    <div>
+      <div class="eyebrow eyebrow-accent" style="margin-bottom:10px">Misschien vind je dit ook leuk</div>
+      <h2 class="sec-title" style="font-size:36px">Bij dit stukje <em>passen</em></h2>
+    </div>
+    <a href="collection.html" class="btn-link">Alle producten →</a>
+  </div>
+
+  <div class="rel-grid">
+    <a class="rcard" href="#">
+      <div class="rcard-photo">
+        <div class="rcard-img bg-sky"><img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/100stoerrood-blauw2.png?v=1699807717" alt="" onerror="this.style.display='none'"/></div>
+      </div>
+      <h3 class="rcard-name">100% Stoer</h3>
+      <p class="rcard-price">€19,95</p>
+    </a>
+    <a class="rcard" href="#">
+      <div class="rcard-photo">
+        <div class="rcard-img bg-lavender"><img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Mamasprinsesjewit-paars.png?v=1699807717" alt="" onerror="this.style.display='none'"/></div>
+      </div>
+      <h3 class="rcard-name">Mama's Prinsesje</h3>
+      <p class="rcard-price">€19,95</p>
+    </a>
+    <a class="rcard" href="#">
+      <div class="rcard-photo">
+        <div class="rcard-img bg-sage"><img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Papasprinsesjeroos2-blauw1.png?v=1699807721" alt="" onerror="this.style.display='none'"/></div>
+      </div>
+      <h3 class="rcard-name">Papa's Prinsesje</h3>
+      <p class="rcard-price">€19,95</p>
+    </a>
+    <a class="rcard" href="#">
+      <div class="rcard-photo">
+        <div class="rcard-img bg-rose"><img src="https://cdn.shopify.com/s/files/1/0846/6022/4299/files/Mamasmooisterood-geel.png?v=1699807720" alt="" onerror="this.style.display='none'"/></div>
+      </div>
+      <h3 class="rcard-name">Mama's Mooiste</h3>
+      <p class="rcard-price">€19,95</p>
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="ft-grid">
+    <div>
+      <div class="ft-logo">Lilybet</div>
+      <span class="ft-tag">by Liesbeth</span>
+      <p class="ft-desc">Handgemaakte kinderkledij uit een klein atelier in Geraardsbergen, België. Elk stuk gemaakt met liefde en aandacht.</p>
+      <div class="ft-soc">
+        <a href="#" aria-label="Facebook">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="ft-col"><h4>Winkel</h4><ul><li><a href="collection.html">Alle producten</a></li><li><a href="#">100% Lief</a></li><li><a href="#">100% Stoer</a></li><li><a href="#">Mama &amp; Papa</a></li></ul></div>
+    <div class="ft-col"><h4>Info</h4><ul><li><a href="#">Over Lilybet</a></li><li><a href="#">Personaliseren</a></li><li><a href="#">Verzending</a></li><li><a href="#">FAQ</a></li></ul></div>
+    <div class="ft-col"><h4>Atelier</h4><ul><li><a href="#">Adamstraat 8</a></li><li><a href="#">9500 Geraardsbergen</a></li><li><a href="tel:0494773070">0494 77 30 70</a></li></ul></div>
+  </div>
+  <div class="ft-bot">
+    <p>© 2025 Lilybet by Liesbeth — Met liefde gemaakt in België</p>
+    <div class="ft-pays"><span class="ft-pay">VISA</span><span class="ft-pay">MC</span><span class="ft-pay">Bancontact</span><span class="ft-pay">PayPal</span></div>
+  </div>
+</footer>
+
+<script>
+// Sticky header
+window.addEventListener('scroll', () => {
+  document.getElementById('hdr').classList.toggle('shrunk', window.scrollY > 20);
+}, { passive: true });
+
+// Gallery thumb + swatch sync
+const main     = document.getElementById('main-img');
+const mainBox  = document.getElementById('main-photo');
+const colorVal = document.getElementById('color-value');
+
+function setVariant(img, bg, name) {
+  main.style.opacity = '0';
+  setTimeout(() => {
+    main.src = img;
+    mainBox.style.background = bg;
+    main.style.opacity = '1';
+  }, 150);
+  if (name) colorVal.textContent = name;
+}
+
+document.querySelectorAll('#thumbs .thumb').forEach((t, i) => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('#thumbs .thumb').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    setVariant(t.dataset.img, t.dataset.bg);
+    // also activate matching swatch
+    const swatches = document.querySelectorAll('#swatches .swatch');
+    swatches.forEach(s => s.classList.remove('on'));
+    if (swatches[i]) {
+      swatches[i].classList.add('on');
+      colorVal.textContent = swatches[i].dataset.name;
+    }
+  });
+});
+
+document.querySelectorAll('#swatches .swatch').forEach((s, i) => {
+  s.addEventListener('click', () => {
+    document.querySelectorAll('#swatches .swatch').forEach(x => x.classList.remove('on'));
+    s.classList.add('on');
+    setVariant(s.dataset.img, s.dataset.bg, s.dataset.name);
+    // also activate matching thumb
+    const thumbs = document.querySelectorAll('#thumbs .thumb');
+    thumbs.forEach(t => t.classList.remove('active'));
+    if (thumbs[i]) thumbs[i].classList.add('active');
+  });
+});
+
+// Qty
+let q = 1;
+function qty(d) {
+  q = Math.max(1, Math.min(10, q + d));
+  document.getElementById('qty').textContent = q;
+}
+
+// Add to cart
+function addToCart() {
+  const c = document.getElementById('cart-count');
+  c.textContent = parseInt(c.textContent, 10) + q;
+  c.classList.remove('pop'); void c.offsetWidth; c.classList.add('pop');
+  const btn = document.querySelector('.add-btn');
+  const orig = btn.innerHTML;
+  btn.innerHTML = '✓ Toegevoegd aan winkelmand';
+  btn.style.background = 'var(--accent)';
+  setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 1800);
+}
+</script>
+
+</body>
+</html>
